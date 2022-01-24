@@ -57,18 +57,15 @@ endif()
 option(NUPIC_TOGGLE_INSTALL "Toggle whether to install headers, libraries, and executables to the install location for C++ clients" OFF)
 
 #
-# Set up compile flags for internal sources and for swig-generated sources
+# Set up compile flags for internal sources
 #
 
 set(src_compile_flags "${INTERNAL_CXX_FLAGS_OPTIMIZED}")
-set(src_swig_generated_file_compile_flags "${EXTERNAL_CXX_FLAGS_OPTIMIZED}")
 
 if(MINGW)
   # This is for GCC 4.8.x
   # http://stackoverflow.com/questions/10660524/error-building-boost-1-49-0-with-gcc-4-7-0
   set(src_compile_flags "${src_compile_flags} -include cmath")
-  set(src_swig_generated_file_compile_flags
-      "${src_swig_generated_file_compile_flags} -include cmath")
 endif()
 
 
@@ -130,22 +127,6 @@ add_definitions(${src_compiler_definitions})
 
 
 #
-# Find Python Interp, min. v2.7
-# And NumPy core directory
-#
-find_package(PythonInterp 2.7 REQUIRED)
-message(STATUS "CMAKE Found python interpreter ${PYTHON_EXECUTABLE} version=${PYTHON_VERSION_STRING}")
-execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
-                        "import numpy; import os; import sys; sys.stdout.write(os.path.dirname(numpy.get_include()))"
-                         OUTPUT_VARIABLE src_numpy_core)
-
-# Quick way to fixup directory paths to NumPy
-get_filename_component(src_numpy_core ${src_numpy_core}/include/.. ABSOLUTE)
-
-message(STATUS "src_numpy_core   = ${src_numpy_core}")
-
-
-#
 # Setup include paths
 #
 if("${PROJECT_BUILD_ARTIFACTS_DIR}" STREQUAL "")
@@ -153,7 +134,6 @@ if("${PROJECT_BUILD_ARTIFACTS_DIR}" STREQUAL "")
 endif()
 
 include_directories(SYSTEM
-                    ${src_numpy_core}/include
                     ${PROJECT_BINARY_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR})
@@ -163,8 +143,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 #
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
                       ${REPOSITORY_DIR}/external/common/
-                      ${REPOSITORY_DIR}/external/${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}/
-                      ${src_numpy_core}/)
+                      ${REPOSITORY_DIR}/external/${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}/)
 
 message(STATUS "CMAKE_PREFIX_PATH   = ${CMAKE_PREFIX_PATH}")
 
@@ -188,29 +167,6 @@ add_library(${src_lib_static_gtest}
 set_target_properties(${src_lib_static_gtest}
                       PROPERTIES COMPILE_FLAGS "${src_compile_flags}"
                       LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
-
-#
-# Locate Python artifacts
-#
-find_package(PythonLibs REQUIRED)
-include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
-
-message(STATUS "PYTHON_EXECUTABLE   = ${PYTHON_EXECUTABLE}")
-message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
-message(STATUS "PYTHON_LIBRARIES    = ${PYTHON_LIBRARIES}")
-
-
-#
-# Python support
-#
-set(src_py_support_files
-    nupic/py_support/NumpyArrayObject.cpp
-    nupic/py_support/NumpyVector.cpp
-    nupic/py_support/PyArray.cpp
-    nupic/py_support/PyHelpers.cpp
-    nupic/py_support/PythonStream.cpp
-    nupic/bindings/PySparseTensor.cpp
-)
 
 
 # List all .capnp files here. The C++ files will be generated and included
@@ -262,9 +218,6 @@ message(STATUS "CAPNP_EXECUTABLE          = ${CAPNP_EXECUTABLE}")
 message(STATUS "CAPNP_CMAKE_DEFINITIONS   = ${CAPNP_CMAKE_DEFINITIONS}")
 message(STATUS "CAPNP_INCLUDE_DIRS        = ${CAPNP_INCLUDE_DIRS}")
 message(STATUS "CAPNP_STATIC_LIB_TARGET   = ${CAPNP_STATIC_LIB_TARGET}")
-
-message(STATUS "SWIG_EXECUTABLE           = ${SWIG_EXECUTABLE}")
-message(STATUS "SWIG_DIR                  = ${SWIG_DIR}")
 
 #
 # Common system libraries for shared libraries and executables
@@ -379,11 +332,10 @@ set(src_nupiccore_srcs
 
 set(src_lib_static_nupiccore_srcs
     ${src_capnp_generated_srcs}
-    ${src_py_support_files}
     ${src_nupiccore_srcs})
 
 set(src_lib_static_nupiccore_compile_flags
-    "${src_compile_flags} -I${src_numpy_core}/include")
+    "${src_compile_flags}")
 
 message(STATUS "src_compile_flags = ${src_compile_flags}")
 message(STATUS "src_lib_static_nupiccore_compile_flags = ${src_lib_static_nupiccore_compile_flags}")
@@ -615,219 +567,6 @@ add_custom_target(tests_all
 
 
 #
-# Use SWIG to generate Python extensions.
-#
-if (NUPIC_BUILD_PYEXT_MODULES)
-  include(UseSWIG)
-
-  # Set the output location for the language modules that are created.
-  set(CMAKE_SWIG_OUTDIR ${PROJECT_BINARY_DIR})
-
-  # Make sure the directory exists for the generated C++ files.
-  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/nupic/bindings)
-
-  # TODO ZZZ set COMPILE_FLAGS on swig targets
-
-  # SWIG options from:
-  # https://github.com/swig/swig/blob/master/Source/Modules/python.cxx#L111
-  set(src_swig_flags
-      -c++
-      -features
-      autodoc=0,directors=0
-      -noproxyimport
-      -keyword
-      -modern
-      -modernargs
-      -noproxydel
-      -fvirtual
-      -fastunpack
-      -nofastproxy
-      -fastquery
-      -outputtuple
-      -castmode
-      -nosafecstrings
-      -w402
-      -w503
-      -w511
-      -w302
-      -w362
-      -w312
-      -w389
-      -DSWIG_PYTHON_LEGACY_BOOL
-      -I${SWIG_DIR}/python
-      -I${SWIG_DIR}
-      ${src_compiler_definitions}
-  )
-
-  file(GLOB_RECURSE swig_header_deps *.i *.hpp *.h)
-
-  message(STATUS "src_swig_flags = ${src_swig_flags}")
-
-  # Tell swig which command-line options to use, allowing user to override
-  set(CMAKE_SWIG_FLAGS ${src_swig_flags} ${CMAKE_SWIG_FLAGS})
-
-  # Set up linker flags for python extension shared libraries
-  set(_SRC_SWIG_EXTENSION_LINK_FLAGS "${PYEXT_LINKER_FLAGS_OPTIMIZED}")
-
-  # NOTE Non-Windows Python extensions shouldn't be linking against libpython;
-  # symbols should be available automatically when python loads the extension.
-  #
-  set(_SRC_SWIG_LINK_LIBRARIES
-      ${src_lib_static_nupiccore_combined}
-      ${src_common_os_libs})
-
-  # Common dependencies for our python extensions for use with
-  # SWIG_MODULE_name_EXTRA_DEPS
-  # Make sure we don't execute the swig executable before it is built
-  set(_SRC_SWIG_EXTRA_DEPS Swig)
-
-  # NOTE Windows DLLs are shared executables with their own main; they require
-  # all symbols to resolve at link time, so we have to add libpython for this
-  # platform
-  #
-  # NOTE On Windows nupic.bindings builds we presently build self-contained
-  # CAPNP_LITE, and Windows nupic/nupic.bindings presently has no
-  # dependency on pycapnp.
-  if("${PLATFORM}" STREQUAL "windows")
-    list(APPEND _SRC_SWIG_LINK_LIBRARIES
-         ${PYTHON_LIBRARIES})
-  endif()
-
-  message(STATUS "_SRC_SWIG_EXTRA_DEPS     = ${_SRC_SWIG_EXTRA_DEPS}")
-  message(STATUS "_SRC_SWIG_LINK_LIBRARIES = ${_SRC_SWIG_LINK_LIBRARIES}")
-  message(STATUS "_SRC_SWIG_EXTENSION_LINK_FLAGS= ${_SRC_SWIG_EXTENSION_LINK_FLAGS}")
-  message(STATUS "CMAKE_SWIG_FLAGS        = ${CMAKE_SWIG_FLAGS}")
-
-
-  function(PREPEND_BOILERPLATE_TO_PYTHON_PROXY_MODULE
-           MODULE_NAME)
-    # Add a custom command to the Swig target to prepend boilerplate to the
-    # swig-generated python proxy module
-    # ${CMAKE_SWIG_OUTDIR}/${MODULE_NAME}.py.
-    #
-    # :param MODULE_NAME: the custom command will be added to the target
-    #   corresponding to this Swig module name.
-    set(preamble_filepath "${CMAKE_SOURCE_DIR}/src/nupic/bindings/swig_proxy_preamble.py")
-    set(module_filepath "${CMAKE_SWIG_OUTDIR}/${MODULE_NAME}.py")
-
-    add_custom_command(
-      TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME}
-      POST_BUILD
-      COMMAND
-        ${CMAKE_COMMAND}
-            -DSRC_FILE_1=${preamble_filepath}
-            -DSRC_FILE_2=${module_filepath}
-            -DTARGET_FILE=${module_filepath}
-            -P ${CMAKE_SOURCE_DIR}/src/ConcatTwoFiles.cmake
-      COMMENT "Prepending ${preamble_filepath} to swig-generated module ${module_filepath}"
-    )
-  endfunction(PREPEND_BOILERPLATE_TO_PYTHON_PROXY_MODULE)
-
-
-  function(BUILD_EXTENSION MODULE_NAME)
-    # Create a nupic.bindings swig extension target with the given Swig module
-    # name. Also, if PY_EXTENSIONS_DIR is specified, request
-    # installation of the extension library and python proxy module.
-    #
-    # The real target name is ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME}.
-
-    set(source_interface_file nupic/bindings/${MODULE_NAME}.i)
-
-    set_source_files_properties(${source_interface_file} PROPERTIES
-                                CPLUSPLUS ON
-                                SWIG_MODULE_NAME ${MODULE_NAME})
-
-    # Regenerate SWIG bindings if any headers change.
-    set(SWIG_MODULE_${MODULE_NAME}_EXTRA_DEPS ${swig_header_deps})
-
-    #
-    # Create custom command for generating files from SWIG
-    #
-
-    # Note: swig_add_module outputs ${swig_generated_file_fullname}
-    if (CMAKE_VERSION VERSION_LESS "3.8")    
-      swig_add_module(${MODULE_NAME} python ${source_interface_file})
-    else()
-      SWIG_ADD_LIBRARY(${MODULE_NAME} 
-        LANGUAGE python 
-        SOURCES ${source_interface_file})
-    endif()
-
-    set_source_files_properties(
-      ${swig_generated_file_fullname} PROPERTIES
-      GENERATED TRUE
-      COMPILE_FLAGS ${src_swig_generated_file_compile_flags})
-
-    swig_link_libraries(${MODULE_NAME} ${_SRC_SWIG_LINK_LIBRARIES})
-
-    prepend_boilerplate_to_python_proxy_module(${MODULE_NAME})
-
-    set(real_target "${SWIG_MODULE_${MODULE_NAME}_REAL_NAME}")
-
-    set(extra_deps ${_SRC_SWIG_EXTRA_DEPS})
-    set(link_flags ${_SRC_SWIG_EXTENSION_LINK_FLAGS})
-
-    # Create an export map and update extra dependencies and link flags. This
-    # export map prevents runtime-link preemption of statically-linked
-    # libraries, such as -static-libstdc++, and limits the shared object's
-    # symbol visibility to only the python extension's init function. NOTE Not
-    # sure what, if anything, to do for MSVC at this time.
-    set(extension_init_func "init${real_target}")
-
-    if("${PLATFORM}" STREQUAL "darwin")
-      set(link_flags
-          "${link_flags} -Wl,-exported_symbol,_${extension_init_func}")
-
-    elseif("${PLATFORM}" STREQUAL "linux" OR MINGW)
-      set(export_map_file
-          "${CMAKE_CURRENT_BINARY_DIR}/${real_target}_generated.expmap")
-
-      # list(APPEND extra_deps "${export_map_file}")
-      set(link_flags "${link_flags} -Wl,--version-script=${export_map_file}")
-
-      set(export_map_contents "{global: ${extension_init_func}; local: *;};")
-
-      message(STATUS "Writing export map file ${export_map_file} "
-              "(${export_map_contents}).")
-
-      file(WRITE ${export_map_file} "${export_map_contents}")
-    endif()
-
-
-    add_dependencies(${real_target} ${extra_deps})
-    set_target_properties(${real_target} PROPERTIES
-                          LINK_FLAGS "${link_flags}")
-
-    # If a path is specified, copy extensions files to proper location.
-    if (PY_EXTENSIONS_DIR)
-      install(TARGETS
-              ${real_target}
-              LIBRARY DESTINATION ${PY_EXTENSIONS_DIR})
-      install(FILES
-              ${PROJECT_BINARY_DIR}/${MODULE_NAME}.py
-              DESTINATION ${PY_EXTENSIONS_DIR})
-    endif(PY_EXTENSIONS_DIR)
-
-    message(
-      STATUS
-      "Created Swig target ${real_target} for swig module ${MODULE_NAME}. "
-      "extra_deps=${extra_deps}, link_flags=${link_flags}")
-  endfunction(BUILD_EXTENSION)
-
-
-  # Algorithms
-  build_extension("algorithms")
-
-  # Engine
-  build_extension("engine_internal")
-
-  # Math
-  build_extension("math")
-
-endif() # NUPIC_BUILD_PYEXT_MODULES
-
-
-#
 # Install targets into CMAKE_INSTALL_PREFIX
 #
 install(TARGETS
@@ -848,7 +587,7 @@ install(TARGETS
 install(FILES ${PROJECT_BINARY_DIR}/Version.hpp
         DESTINATION include/nupic)
 
-if ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
+if (NUPIC_TOGGLE_INSTALL)
   install(DIRECTORY nupic DESTINATION include
           MESSAGE_NEVER
           FILES_MATCHING PATTERN "*.h*"
@@ -872,12 +611,9 @@ if ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
           MESSAGE_NEVER
           DESTINATION include)
 
-  install(DIRECTORY "${src_numpy_core}/lib/"
+  install(DIRECTORY nupic DESTINATION include/nupic
           MESSAGE_NEVER
-          DESTINATION lib)
-  install(DIRECTORY "${src_numpy_core}/include/"
-          MESSAGE_NEVER
-          DESTINATION include)
+          FILES_MATCHING PATTERN "*.py")
 
   foreach(directory ${CAPNP_INCLUDE_DIRS})
     install(DIRECTORY "${directory}/capnp"
@@ -887,13 +623,6 @@ if ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
             MESSAGE_NEVER
             DESTINATION include)
   endforeach()
-
-  install(DIRECTORY nupic/py_support DESTINATION include/nupic
-          MESSAGE_NEVER
-          FILES_MATCHING PATTERN "*.c*")
-  install(DIRECTORY nupic DESTINATION include/nupic
-          MESSAGE_NEVER
-          FILES_MATCHING PATTERN "*.py")
 
   install(DIRECTORY "${CAPNP_BINARIES}"
           MESSAGE_NEVER
@@ -914,7 +643,7 @@ if ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
   #         MESSAGE_NEVER
   #         DESTINATION include)
 
-endif ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
+endif (NUPIC_TOGGLE_INSTALL)
 
 #
 # `make package` results in
