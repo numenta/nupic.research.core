@@ -77,12 +77,14 @@ endif()
 #
 
 string(TOUPPER ${PLATFORM} platform_uppercase)
+string(TOUPPER ${CMAKE_SYSTEM_PROCESSOR} processor_uppercase)
 
 set(src_compiler_definitions
     ${COMMON_COMPILER_DEFINITIONS}
     ${CAPNP_COMPILER_DEFINITIONS}
     -DNTA_OS_${platform_uppercase}
     -DNTA_ARCH_${BITNESS}
+    -DNTA_PROCESSOR_${processor_uppercase}
     -DHAVE_CONFIG_H
     -DNTA_INTERNAL
     -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
