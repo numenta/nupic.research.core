@@ -27,7 +27,6 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include <nupic/ntypes/MemStream.hpp>
-#include <nupic/os/Env.hpp>
 #include <nupic/utils/LoggingException.hpp>
 #include <nupic/utils/Random.hpp>
 #include <sstream>

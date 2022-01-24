@@ -39,7 +39,6 @@
 #include <nupic/algorithms/SegmentUpdate.hpp>
 #include <nupic/math/ArrayAlgo.hpp> // is_in
 #include <nupic/math/StlIo.hpp>     // binary_save
-#include <nupic/os/FStream.hpp>
 #include <nupic/os/Timer.hpp>
 #include <nupic/proto/Cells4.capnp.h>
 #include <nupic/utils/Log.hpp>
@@ -2182,28 +2181,28 @@ void Cells4::save(std::ostream &outStream) const {
 /**
  * Save the state to the given file
  */
-void Cells4::saveToFile(std::string filePath) const {
-  OFStream outStream(filePath.c_str(),
-                     std::ios_base::out | std::ios_base::binary);
-  // Request std::ios_base::failure exception upon logical or physical i/o error
-  outStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+// void Cells4::saveToFile(std::string filePath) const {
+//   OFStream outStream(filePath.c_str(),
+//                      std::ios_base::out | std::ios_base::binary);
+//   // Request std::ios_base::failure exception upon logical or physical i/o error
+//   outStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-  outStream.precision(std::numeric_limits<double>::digits10 + 1);
-  save(outStream);
+//   outStream.precision(std::numeric_limits<double>::digits10 + 1);
+//   save(outStream);
 
-  // Explicitly close the stream so that we may get an exception on error
-  outStream.close();
-}
+//   // Explicitly close the stream so that we may get an exception on error
+//   outStream.close();
+// }
 
 //----------------------------------------------------------------------
 /**
  * Load the state from the given file
  */
-void Cells4::loadFromFile(std::string filePath) {
-  IFStream outStream(filePath.c_str(),
-                     std::ios_base::in | std::ios_base::binary);
-  load(outStream);
-}
+// void Cells4::loadFromFile(std::string filePath) {
+//   IFStream outStream(filePath.c_str(),
+//                      std::ios_base::in | std::ios_base::binary);
+//   load(outStream);
+// }
 
 //------------------------------------------------------------------------------
 /**

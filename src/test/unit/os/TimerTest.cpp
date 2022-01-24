@@ -26,7 +26,8 @@
 
 #define SLEEP_MICROSECONDS (100 * 1000)
 
-#include <apr-1/apr_time.h>
+#include <thread> // std::this_thread::sleep_for
+#include <chrono> // std::chrono::seconds
 #include <gtest/gtest.h>
 #include <math.h> // fabs
 #include <nupic/os/Timer.hpp>
@@ -46,7 +47,7 @@ TEST(TimerTest, Basic) {
   ASSERT_EQ(t1.getStartCount(), 0);
   EXPECT_STREQ("[Elapsed: 0 Starts: 0]", t1.toString().c_str());
 
-  apr_sleep(SLEEP_MICROSECONDS);
+  std::this_thread::sleep_for (std::chrono::milliseconds(100));
 
   ASSERT_TRUE(t2.isStarted());
   ASSERT_EQ(t2.getStartCount(), 1);
@@ -54,7 +55,7 @@ TEST(TimerTest, Basic) {
   Real64 t2elapsed = t2.getElapsed();
 
   t1.start();
-  apr_sleep(SLEEP_MICROSECONDS);
+  std::this_thread::sleep_for (std::chrono::milliseconds(100));
   t1.stop();
 
   t2.stop();

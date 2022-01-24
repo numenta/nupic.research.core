@@ -90,8 +90,9 @@ set(src_compiler_definitions
     -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
     -DBOOST_NO_WREGEX
     -DNUPIC2
-    -DAPR_DECLARE_STATIC
-    -DAPU_DECLARE_STATIC)
+    # -DAPR_DECLARE_STATIC
+    # -DAPU_DECLARE_STATIC
+    )
 
 if(NOT ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armv7l" OR "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "aarch64"))
   set(src_compiler_definitions
@@ -215,18 +216,18 @@ set(src_py_support_files
 # List all .capnp files here. The C++ files will be generated and included
 # when compiling later on.
 set(src_capnp_specs_rel
-  nupic/proto/ArrayProto.capnp
+  # nupic/proto/ArrayProto.capnp
   nupic/proto/BitHistory.capnp
   nupic/proto/Cell.capnp
   nupic/proto/Cells4.capnp
   nupic/proto/ClaClassifier.capnp
   nupic/proto/ConnectionsProto.capnp
-  nupic/proto/LinkProto.capnp
-  nupic/proto/Map.capnp
-  nupic/proto/NetworkProto.capnp
-  nupic/proto/PyRegionProto.capnp
+  # nupic/proto/LinkProto.capnp
+  # nupic/proto/Map.capnp
+  # nupic/proto/NetworkProto.capnp
+  # nupic/proto/PyRegionProto.capnp
   nupic/proto/RandomProto.capnp
-  nupic/proto/RegionProto.capnp
+  # nupic/proto/RegionProto.capnp
   nupic/proto/Segment.capnp
   nupic/proto/SegmentUpdate.capnp
   nupic/proto/SparseBinaryMatrixProto.capnp
@@ -235,8 +236,8 @@ set(src_capnp_specs_rel
   nupic/proto/SdrClassifier.capnp
   nupic/proto/SvmProto.capnp
   nupic/proto/TemporalMemoryProto.capnp
-  nupic/proto/TestNodeProto.capnp
-  nupic/proto/VectorFileSensorProto.capnp
+  # nupic/proto/TestNodeProto.capnp
+  # nupic/proto/VectorFileSensorProto.capnp
 )
 
 # Create custom command for generating C++ code from .capnp schema files.
@@ -311,60 +312,70 @@ set(src_nupiccore_srcs
     nupic/algorithms/TemporalMemory.cpp
     nupic/algorithms/Svm.cpp
     nupic/encoders/ScalarEncoder.cpp
-    nupic/encoders/ScalarSensor.cpp
-    nupic/engine/Collections.cpp
-    nupic/engine/Input.cpp
-    nupic/engine/Link.cpp
-    nupic/engine/LinkPolicyFactory.cpp
-    nupic/engine/Network.cpp
-    nupic/engine/NuPIC.cpp
-    nupic/engine/Output.cpp
-    nupic/engine/Region.cpp
-    nupic/engine/RegionImpl.cpp
-    nupic/engine/RegionImplFactory.cpp
-    nupic/engine/RegionIo.cpp
-    nupic/engine/RegionParameters.cpp
-    nupic/engine/Spec.cpp
-    nupic/engine/TestFanIn2LinkPolicy.cpp
-    nupic/engine/TestNode.cpp
-    nupic/engine/UniformLinkPolicy.cpp
-    nupic/engine/YAMLUtils.cpp
+
+    ## Depends on BundleIO.cpp
+    # nupic/encoders/ScalarSensor.cpp
+    # nupic/engine/Collections.cpp  # Depends on BundleIO.cpp
+    # nupic/engine/Input.cpp
+    # nupic/engine/Link.cpp
+    # nupic/engine/LinkPolicyFactory.cpp
+    # nupic/engine/Network.cpp
+    # nupic/engine/NuPIC.cpp
+    # nupic/engine/Output.cpp
+    # nupic/engine/Region.cpp
+    # nupic/engine/RegionImpl.cpp
+    # nupic/engine/RegionImplFactory.cpp
+    # nupic/engine/RegionIo.cpp
+    # nupic/engine/RegionParameters.cpp
+    # nupic/engine/Spec.cpp
+    # nupic/engine/TestFanIn2LinkPolicy.cpp
+    # nupic/engine/TestNode.cpp
+    # nupic/engine/UniformLinkPolicy.cpp
+    # nupic/engine/YAMLUtils.cpp
+
     nupic/math/SparseMatrixAlgorithms.cpp
     nupic/math/SparseMatrixConnections.cpp
     nupic/math/StlIo.cpp
     nupic/math/Topology.cpp
     nupic/ntypes/ArrayBase.cpp
     nupic/ntypes/Buffer.cpp
-    nupic/ntypes/BundleIO.cpp
+    # nupic/ntypes/BundleIO.cpp  # Need to remove dependency on APR or fix it
     nupic/ntypes/Collection.cpp
     nupic/ntypes/Dimensions.cpp
     nupic/ntypes/MemParser.cpp
     nupic/ntypes/Scalar.cpp
     nupic/ntypes/Value.cpp
-    nupic/os/Directory.cpp
-    nupic/os/DynamicLibrary.cpp
-    nupic/os/Env.cpp
-    nupic/os/FStream.cpp
-    nupic/os/OS.cpp
-    nupic/os/OSUnix.cpp
-    nupic/os/OSWin.cpp
-    nupic/os/Path.cpp
-    nupic/os/Regex.cpp
+
+    ## Need to remove dependency on APR or fix it
+    # nupic/os/Directory.cpp
+    # nupic/os/DynamicLibrary.cpp
+    # nupic/os/Env.cpp
+    # nupic/os/FStream.cpp
+    # nupic/os/OS.cpp
+    # nupic/os/OSUnix.cpp
+    # nupic/os/OSWin.cpp
+    # nupic/os/Path.cpp
+    # nupic/os/Regex.cpp
+
     nupic/os/Timer.cpp
-    nupic/regions/PyRegion.cpp
-    nupic/regions/VectorFile.cpp
-    nupic/regions/VectorFileEffector.cpp
-    nupic/regions/VectorFileSensor.cpp
+
+    ## Depends on engine, APR
+    # nupic/regions/PyRegion.cpp
+    # nupic/regions/VectorFile.cpp
+    # nupic/regions/VectorFileEffector.cpp
+    # nupic/regions/VectorFileSensor.cpp
+
     nupic/types/BasicType.cpp
     nupic/types/Fraction.cpp
-    nupic/utils/ArrayProtoUtils.cpp
+    # nupic/utils/ArrayProtoUtils.cpp  # Depends on engine
     nupic/utils/LoggingException.cpp
     nupic/utils/LogItem.cpp
     nupic/utils/MovingAverage.cpp
     nupic/utils/Random.cpp
     nupic/utils/StringUtils.cpp
     nupic/utils/TRandom.cpp
-    nupic/utils/Watcher.cpp)
+    # nupic/utils/Watcher.cpp  # Depends on APR
+    )
 
 set(src_lib_static_nupiccore_srcs
     ${src_capnp_generated_srcs}
@@ -383,8 +394,8 @@ add_library(${src_lib_static_nupiccore_solo} STATIC
 add_dependencies(${src_lib_static_nupiccore_solo}
                  ${YAML_CPP_STATIC_LIB_TARGET}
                  ${YAML_STATIC_LIB_TARGET}
-                 ${APR1_STATIC_LIB_TARGET}
-                 ${APRUTIL1_STATIC_LIB_TARGET}
+                 # ${APR1_STATIC_LIB_TARGET}
+                 # ${APRUTIL1_STATIC_LIB_TARGET}
                  ${Z_STATIC_LIB_TARGET})
 set_target_properties(${src_lib_static_nupiccore_solo} PROPERTIES COMPILE_FLAGS
                       ${src_lib_static_nupiccore_compile_flags})
@@ -410,8 +421,8 @@ set(src_external_static_libs
     ${CAPNP_STATIC_LIB_TARGET}
     ${YAML_CPP_STATIC_LIB_TARGET}
     ${YAML_STATIC_LIB_TARGET}
-    ${APR1_STATIC_LIB_TARGET}
-    ${APRUTIL1_STATIC_LIB_TARGET}
+    # ${APR1_STATIC_LIB_TARGET}
+    # ${APRUTIL1_STATIC_LIB_TARGET}
     ${Z_STATIC_LIB_TARGET})
 
 set(src_combined_nupiccore_source_archives
@@ -436,35 +447,35 @@ set(src_common_test_exe_libs
 message(STATUS "src_common_test_exe_libs = ${src_common_test_exe_libs}")
 
 
-#
+# Disabled until engine (Network API) is re-added to build
 # Setup test_cpp_region
 #
-set(src_executable_cppregiontest cpp_region_test)
-add_executable(${src_executable_cppregiontest} test/integration/CppRegionTest.cpp)
-target_link_libraries(${src_executable_cppregiontest} ${src_common_test_exe_libs})
-set_target_properties(${src_executable_cppregiontest} PROPERTIES COMPILE_FLAGS ${src_compile_flags})
-set_target_properties(${src_executable_cppregiontest} PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
-add_custom_target(tests_cpp_region
-                  COMMAND ${src_executable_cppregiontest}
-                  DEPENDS ${src_executable_cppregiontest}
-                  COMMENT "Executing test ${src_executable_cppregiontest}"
-                  VERBATIM)
+# set(src_executable_cppregiontest cpp_region_test)
+# add_executable(${src_executable_cppregiontest} test/integration/CppRegionTest.cpp)
+# target_link_libraries(${src_executable_cppregiontest} ${src_common_test_exe_libs})
+# set_target_properties(${src_executable_cppregiontest} PROPERTIES COMPILE_FLAGS ${src_compile_flags})
+# set_target_properties(${src_executable_cppregiontest} PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
+# add_custom_target(tests_cpp_region
+#                   COMMAND ${src_executable_cppregiontest}
+#                   DEPENDS ${src_executable_cppregiontest}
+#                   COMMENT "Executing test ${src_executable_cppregiontest}"
+#                   VERBATIM)
 
-#
+# Disabled until Network API is re-added to build
 # Setup test_py_region
 #
-set(src_executable_pyregiontest py_region_test)
-add_executable(${src_executable_pyregiontest} test/integration/PyRegionTest.cpp)
-target_link_libraries(${src_executable_pyregiontest} ${src_common_test_exe_libs})
-set_target_properties(${src_executable_pyregiontest}
-                      PROPERTIES COMPILE_FLAGS ${src_compile_flags})
-set_target_properties(${src_executable_pyregiontest}
-                      PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
-add_custom_target(tests_py_region
-                  COMMAND ${src_executable_pyregiontest}
-                  DEPENDS ${src_executable_pyregiontest}
-                  COMMENT "Executing test ${src_executable_pyregiontest}"
-                  VERBATIM)
+# set(src_executable_pyregiontest py_region_test)
+# add_executable(${src_executable_pyregiontest} test/integration/PyRegionTest.cpp)
+# target_link_libraries(${src_executable_pyregiontest} ${src_common_test_exe_libs})
+# set_target_properties(${src_executable_pyregiontest}
+#                       PROPERTIES COMPILE_FLAGS ${src_compile_flags})
+# set_target_properties(${src_executable_pyregiontest}
+#                       PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
+# add_custom_target(tests_py_region
+#                   COMMAND ${src_executable_pyregiontest}
+#                   DEPENDS ${src_executable_pyregiontest}
+#                   COMMENT "Executing test ${src_executable_pyregiontest}"
+#                   VERBATIM)
 
 #
 # Setup test_connections_performance
@@ -484,16 +495,16 @@ add_custom_target(tests_connections_performance
                   COMMENT "Executing test ${src_executable_connectionsperformancetest}"
                   VERBATIM)
 
-#
+# Disabled until Network API is re-added to build
 # Setup helloregion example
 #
-set(src_executable_helloregion helloregion)
-add_executable(${src_executable_helloregion} examples/regions/HelloRegions.cpp)
-target_link_libraries(${src_executable_helloregion} ${src_common_test_exe_libs})
-set_target_properties(${src_executable_helloregion}
-                      PROPERTIES COMPILE_FLAGS ${src_compile_flags})
-set_target_properties(${src_executable_helloregion}
-                      PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
+# set(src_executable_helloregion helloregion)
+# add_executable(${src_executable_helloregion} examples/regions/HelloRegions.cpp)
+# target_link_libraries(${src_executable_helloregion} ${src_common_test_exe_libs})
+# set_target_properties(${src_executable_helloregion}
+#                       PROPERTIES COMPILE_FLAGS ${src_compile_flags})
+# set_target_properties(${src_executable_helloregion}
+#                       PROPERTIES LINK_FLAGS "${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
 
 #
 # Setup prototest example
@@ -534,11 +545,11 @@ add_executable(${src_executable_gtests}
                test/unit/algorithms/SvmTest.cpp
                test/unit/algorithms/TemporalMemoryTest.cpp
                test/unit/encoders/ScalarEncoderTest.cpp
-               test/unit/engine/InputTest.cpp
-               test/unit/engine/LinkTest.cpp
-               test/unit/engine/NetworkTest.cpp
-               test/unit/engine/UniformLinkPolicyTest.cpp
-               test/unit/engine/YAMLUtilsTest.cpp
+               # test/unit/engine/InputTest.cpp
+               # test/unit/engine/LinkTest.cpp
+               # test/unit/engine/NetworkTest.cpp
+               # test/unit/engine/UniformLinkPolicyTest.cpp
+               # test/unit/engine/YAMLUtilsTest.cpp
                test/unit/math/DenseTensorUnitTest.cpp
                test/unit/math/DomainUnitTest.cpp
                test/unit/math/IndexUnitTest.cpp
@@ -559,13 +570,12 @@ add_executable(${src_executable_gtests}
                test/unit/ntypes/NodeSetTest.cpp
                test/unit/ntypes/ScalarTest.cpp
                test/unit/ntypes/ValueTest.cpp
-               test/unit/os/DirectoryTest.cpp
-               test/unit/os/EnvTest.cpp
-               test/unit/os/OSTest.cpp
-               test/unit/os/PathTest.cpp
-               test/unit/os/RegexTest.cpp
+               # test/unit/os/DirectoryTest.cpp
+               # test/unit/os/EnvTest.cpp
+               # test/unit/os/OSTest.cpp
+               # test/unit/os/PathTest.cpp
+               # test/unit/os/RegexTest.cpp
                test/unit/os/TimerTest.cpp
-               test/unit/py_support/PyHelpersTest.cpp
                test/unit/types/BasicTypeTest.cpp
                test/unit/types/ExceptionTest.cpp
                test/unit/types/FractionTest.cpp
@@ -573,7 +583,8 @@ add_executable(${src_executable_gtests}
                test/unit/utils/GroupByTest.cpp
                test/unit/utils/MovingAverageTest.cpp
                test/unit/utils/RandomTest.cpp
-               test/unit/utils/WatcherTest.cpp)
+               # test/unit/utils/WatcherTest.cpp
+               )
 target_link_libraries(${src_executable_gtests}
                       ${src_lib_static_gtest}
                       ${src_common_test_exe_libs})
@@ -597,7 +608,7 @@ add_custom_target(tests_unit
 # add_dependencies should be used to set it's dependencies on the custom targets
 # of the inidividual test runners.
 add_custom_target(tests_all
-                  DEPENDS tests_cpp_region
+                  # DEPENDS tests_cpp_region
                   DEPENDS tests_unit
                   COMMENT "Running all tests"
                   VERBATIM)
@@ -822,12 +833,12 @@ endif() # NUPIC_BUILD_PYEXT_MODULES
 install(TARGETS
         ${src_lib_static_nupiccore_combined}
         ${src_lib_static_gtest}
-        ${src_executable_helloregion}
-        ${src_executable_cppregiontest}
-        ${src_executable_pyregiontest}
+        # ${src_executable_helloregion}
+        # ${src_executable_cppregiontest}
+        # ${src_executable_pyregiontest}
         ${src_executable_connectionsperformancetest}
         ${src_executable_hellosptp}
-        ${src_executable_prototest}
+        # ${src_executable_prototest}
         ${src_executable_gtests}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
@@ -896,13 +907,13 @@ if ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
   install(PROGRAMS "${SWIG_EXECUTABLE}"
           DESTINATION bin)
 
-  install(DIRECTORY "${APR1_STATIC_LIB_INC_DIR}/"
-          MESSAGE_NEVER
-          DESTINATION include)
-  install(DIRECTORY "${APRUTIL1_STATIC_LIB_INC_DIR}/"
-          MESSAGE_NEVER
-          DESTINATION include)
-          
+  # install(DIRECTORY "${APR1_STATIC_LIB_INC_DIR}/"
+  #         MESSAGE_NEVER
+  #         DESTINATION include)
+  # install(DIRECTORY "${APRUTIL1_STATIC_LIB_INC_DIR}/"
+  #         MESSAGE_NEVER
+  #         DESTINATION include)
+
 endif ((NOT NUPIC_BUILD_PYEXT_MODULES) OR NUPIC_TOGGLE_INSTALL)
 
 #
