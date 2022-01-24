@@ -341,7 +341,7 @@ class ConnectionsTest(unittest.TestCase):
       firstResult = None
       differingResults = False
 
-      for _ in xrange(20):
+      for _ in range(20):
         connections = SparseMatrixConnections(2048, 2048)
 
         segments = connections.createSegments(cells)
@@ -432,7 +432,7 @@ class ConnectionsTest(unittest.TestCase):
       firstResult = None
       differingResults = False
 
-      for _ in xrange(20):
+      for _ in range(20):
         connections = SparseMatrixConnections(2048, 2048)
 
         segments = connections.createSegments(cells)

@@ -22,7 +22,7 @@
 
 """NuPIC random module tests."""
 
-import cPickle as pickle
+import pickle as pickle
 import tempfile
 import unittest
 
@@ -96,9 +96,9 @@ class TestNupicRandom(unittest.TestCase):
     r = Random(42)
     pickledR = pickle.dumps(r)
 
-    test1 = [r.getUInt32() for _ in xrange(10)]
+    test1 = [r.getUInt32() for _ in range(10)]
     r = pickle.loads(pickledR)
-    test2 = [r.getUInt32() for _ in xrange(10)]
+    test2 = [r.getUInt32() for _ in range(10)]
 
     self.assertEqual(test1, test2,
                      "Simple NuPIC random pickle/unpickle failed.")
@@ -109,9 +109,9 @@ class TestNupicRandom(unittest.TestCase):
     # saving the initial seed...
     pickledR = pickle.dumps(r)
 
-    test3 = [r.getUInt32() for _ in xrange(10)]
+    test3 = [r.getUInt32() for _ in range(10)]
     r = pickle.loads(pickledR)
-    test4 = [r.getUInt32() for _ in xrange(10)]
+    test4 = [r.getUInt32() for _ in range(10)]
 
     self.assertEqual(
         test3, test4,
@@ -251,8 +251,8 @@ class TestNupicRandom(unittest.TestCase):
     v1 = r1.getReal64()
     r2 = Random(42)
     v2 = r2.getReal64()
-    self.assertEquals(v1, v2)
-    self.assertEquals(r1, r2)
+    self.assertEqual(v1, v2)
+    self.assertEqual(r1, r2)
 
 if __name__ == "__main__":
   unittest.main()
