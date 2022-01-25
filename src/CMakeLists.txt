@@ -170,6 +170,7 @@ set_target_properties(${src_lib_static_gtest}
 # List all .capnp files here. The C++ files will be generated and included
 # when compiling later on.
 set(src_capnp_specs_rel
+  nupic/proto/ApicalTiebreakTemporalMemoryProto.capnp
   # nupic/proto/ArrayProto.capnp
   nupic/proto/BitHistory.capnp
   nupic/proto/Cell.capnp
@@ -246,6 +247,7 @@ set(src_lib_static_nupiccore_solo nupic_core_solo)
 
 set(src_nupiccore_srcs
     nupic/algorithms/Anomaly.cpp
+    nupic/algorithms/ApicalTiebreakTemporalMemory.cpp
     nupic/algorithms/BitHistory.cpp
     nupic/algorithms/Cell.cpp
     nupic/algorithms/Cells4.cpp
@@ -485,6 +487,7 @@ set_target_properties(${src_executable_hellosptp}
 set(src_executable_gtests unit_tests)
 add_executable(${src_executable_gtests}
                test/unit/algorithms/AnomalyTest.cpp
+               test/unit/algorithms/ApicalTiebreakTemporalMemoryTest.cpp
                test/unit/algorithms/Cells4Test.cpp
                test/unit/algorithms/CondProbTableTest.cpp
                test/unit/algorithms/ConnectionsTest.cpp
