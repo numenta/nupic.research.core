@@ -41,7 +41,7 @@ Notes:
 
 #### Run the tests:
 
-    cd ../bin
+    cd ../release/bin
     ./unit_tests
 
 #### Install nupic.bindings Python library:
