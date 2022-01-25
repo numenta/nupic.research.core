@@ -25,7 +25,7 @@
  */
 
 #define NTA_OVERRIDE_NO_IMPORT_ARRAY
-#include <nupic/py_support/NumpyArrayObject.hpp>
+#include "NumpyArrayObject.hpp"
 
 #include <stdexcept>
 
