@@ -67,8 +67,8 @@ public:
     kj::Array<capnp::word> array = capnp::messageToFlatArray(message); // copy
     kj::ArrayPtr<kj::byte> byteArray = array.asBytes();
     PyObject *result =
-        PyString_FromStringAndSize((const char *)byteArray.begin(),
-                                   byteArray.size()); // copy
+        PyBytes_FromStringAndSize((const char *)byteArray.begin(),
+                                  byteArray.size()); // copy
     return result;
 #else
     throw std::logic_error(
@@ -96,8 +96,8 @@ public:
 
     // NOTE: srcBytes will be set to point to the internal buffer inside
     // pyRegionProtoBytes'
-    PyString_AsStringAndSize(const_cast<PyObject *>(pyBytes),
-                             const_cast<char **>(&srcBytes), &srcNumBytes);
+    PyBytes_AsStringAndSize(const_cast<PyObject *>(pyBytes),
+                            const_cast<char **>(&srcBytes), &srcNumBytes);
 
     if (srcNumBytes % sizeof(capnp::word) != 0) {
       throw std::logic_error(
