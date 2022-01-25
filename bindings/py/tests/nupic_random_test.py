@@ -188,8 +188,8 @@ class TestNupicRandom(unittest.TestCase):
 
   def testSampleBadDtype(self):
     r = Random(42)
-    population = numpy.array([1, 2, 3, 4], dtype="int64")
-    choices = numpy.zeros([2], dtype="int64")
+    population = numpy.array([1, 2, 3, 4], dtype="bool")
+    choices = numpy.zeros([2], dtype="bool")
 
     self.assertRaises(TypeError, r.sample, population, choices)
 
@@ -241,7 +241,7 @@ class TestNupicRandom(unittest.TestCase):
 
   def testShuffleBadDtype(self):
     r = Random(42)
-    arr = numpy.array([1, 2, 3, 4], dtype="int64")
+    arr = numpy.array([1, 2, 3, 4], dtype="bool")
 
     self.assertRaises(ValueError, r.shuffle, arr)
 
