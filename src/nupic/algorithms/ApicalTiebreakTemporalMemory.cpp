@@ -44,8 +44,8 @@
 #include <capnp/serialize.h>
 #include <kj/std/iostream.h>
 
+#include <nupic/algorithms/ApicalTiebreakTemporalMemory.hpp>
 #include <nupic/algorithms/Connections.hpp>
-#include <nupic/experimental/ApicalTiebreakTemporalMemory.hpp>
 #include <nupic/utils/GroupBy.hpp>
 
 using namespace std;

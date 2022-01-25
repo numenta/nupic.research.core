@@ -31,7 +31,7 @@
 #include <nupic/types/Types.hpp>
 #include <nupic/utils/Log.hpp>
 
-#include <nupic/experimental/ApicalTiebreakTemporalMemory.hpp>
+#include <nupic/algorithms/ApicalTiebreakTemporalMemory.hpp>
 #include "gtest/gtest.h"
 
 using namespace nupic;
@@ -1172,7 +1172,6 @@ namespace {
       EXPECT_EQ(1, tm.basalConnections.numSynapses(segment1));
       EXPECT_EQ(1, tm.basalConnections.numSynapses(segment2));
 
-      Segment grownSegment;
       vector<Segment> segments = tm.basalConnections.segmentsForCell(1);
       if (segments.empty())
       {
