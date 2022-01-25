@@ -48,13 +48,6 @@ get_filename_component(REPOSITORY_DIR ${PROJECT_SOURCE_DIR} ABSOLUTE)
 #
 # Global NuPIC CMake options
 #
-option(NUPIC_BUILD_PYEXT_MODULES
-       "Turn on building of python extension modules for nupic.bindings; turn off to build only static nupic_core lib with full symbol visibility."
-       ON)
-
-message(STATUS "NUPIC_BUILD_PYEXT_MODULES = ${NUPIC_BUILD_PYEXT_MODULES}")
-message(STATUS "PY_EXTENSIONS_DIR         = ${PY_EXTENSIONS_DIR}")
-
 message(STATUS "CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "CMAKE_C_COMPILER      = ${CMAKE_C_COMPILER}")
 message(STATUS "CMAKE_CXX_COMPILER    = ${CMAKE_CXX_COMPILER}")

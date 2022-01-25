@@ -61,7 +61,7 @@ static int checkSSE() {
   unsigned int c = 0, d = 0;
   const unsigned int SSE = 1 << 25, SSE2 = 1 << 26, SSE3 = 1 << 0,
                      SSE41 = 1 << 19, SSE42 = 1 << 20;
-#ifdef NTA_ASM
+#if defined(NTA_ASM) && !defined(NTA_PROCESSOR_ARM64)
 #if defined(NTA_ARCH_32)
 #if defined(NTA_OS_WINDOWS) && defined(NTA_COMPILER_MSVC)
 
@@ -230,7 +230,7 @@ inline bool isZero_01(InputIterator x, InputIterator x_end) {
   if (SSE_LEVEL >= 41) { // ptest is a SSE 4.1 instruction
 
     // On win32, the asm syntax is not correct.
-#if defined(NTA_ASM) && defined(NTA_ARCH_32) && !defined(NTA_OS_WINDOWS)
+#if defined(NTA_ASM) && defined(NTA_ARCH_32) && !defined(NTA_OS_WINDOWS) && !defined(NTA_PROCESSOR_ARM64)
 
     // n is the total number of floats to process.
     // n1 is the number of floats we can process in parallel using SSE.
@@ -295,7 +295,7 @@ inline bool isZero_01(InputIterator x, InputIterator x_end) {
         return false;
     return true;
 
-#elif defined(NTA_ASM) && defined(NTA_ARCH_64) && !defined(NTA_OS_WINDOWS)
+#elif defined(NTA_ASM) && defined(NTA_ARCH_64) && !defined(NTA_OS_WINDOWS) && !defined(NTA_PROCESSOR_ARM64)
 
     // n is the total number of floats to process.
     // n1 is the number of floats we can process in parallel using SSE.
@@ -391,7 +391,7 @@ inline bool is_zero_01(const ByteVector &x, size_t begin, size_t end) {
   // const int SSE_LEVEL.
   if (SSE_LEVEL >= 41) { // ptest is a SSE 4.1 instruction
 
-#if defined(NTA_ASM) && defined(NTA_ARCH_32) && !defined(NTA_OS_WINDOWS)
+#if defined(NTA_ASM) && defined(NTA_ARCH_32) && !defined(NTA_OS_WINDOWS) && !defined(NTA_PROCESSOR_ARM64)
 
     // n is the total number of floats to process.
     // n1 is the number of floats we can process in parallel using SSE.
@@ -456,7 +456,7 @@ inline bool is_zero_01(const ByteVector &x, size_t begin, size_t end) {
         return false;
     return true;
 
-#elif defined(NTA_ASM) && !defined(NTA_OS_WINDOWS)
+#elif defined(NTA_ASM) && !defined(NTA_OS_WINDOWS) && !defined(NTA_PROCESSOR_ARM64)
 
     // n is the total number of floats to process.
     // n1 is the number of floats we can process in parallel using SSE.
@@ -3409,6 +3409,8 @@ inline nupic::UInt32 count_gt(nupic::Real32 *begin, nupic::Real32 *end,
   // machines might not have the right SSE instructions.
   if (SSE_LEVEL >= 3) {
 
+#if defined(NTA_ASM) && defined(NTA_ARCH_64) && !defined(NTA_OS_WINDOWS) && !defined(NTA_PROCESSOR_ARM64)
+
     // Compute offsets into array [begin..end):
     // start is the first 4 bytes aligned address (to start movaps)
     // n0 is the number of floats before we reach start and can use parallel
@@ -3423,8 +3425,6 @@ inline nupic::UInt32 count_gt(nupic::Real32 *begin, nupic::Real32 *end,
     int n0 = (int)(start - begin);
     int n1 = 4 * ((end - start) / 4);
     int n2 = (int)(end - start - n1);
-
-#if defined(NTA_ASM) && defined(NTA_ARCH_64) && !defined(NTA_OS_WINDOWS)
 
 #if defined(NTA_OS_DARWIN)
 
@@ -3542,11 +3542,11 @@ inline nupic::UInt32 count_gt(nupic::Real32 *begin, nupic::Real32 *end,
 
 #else
     return std::count_if(
-        begin, end, std::bind2nd(std::greater<nupic::Real32>(), threshold));
+        begin, end, std::bind(std::greater<nupic::Real32>(), std::placeholders::_1, threshold));
 #endif
   } else {
     return std::count_if(
-        begin, end, std::bind2nd(std::greater<nupic::Real32>(), threshold));
+        begin, end, std::bind(std::greater<nupic::Real32>(), std::placeholders::_1, threshold));
   }
 }
 
@@ -3565,7 +3565,7 @@ inline nupic::UInt32 count_gte(nupic::Real32 *begin, nupic::Real32 *end,
   NTA_ASSERT(begin <= end);
 
   return std::count_if(
-      begin, end, std::bind2nd(std::greater_equal<nupic::Real32>(), threshold));
+      begin, end, std::bind(std::greater_equal<nupic::Real32>(), std::placeholders::_1, threshold));
 }
 
 //--------------------------------------------------------------------------------
@@ -3621,7 +3621,7 @@ count_lt(It begin, It end,
          const typename std::iterator_traits<It>::value_type &thres) {
   typedef typename std::iterator_traits<It>::value_type value_type;
   return std::count_if(begin, end,
-                       std::bind2nd(std::less<value_type>(), thres));
+                       std::bind(std::less<value_type>(), std::placeholders::_1, thres));
 }
 
 //--------------------------------------------------------------------------------
@@ -4491,7 +4491,7 @@ inline void logical_and(InputIterator x, InputIterator x_end, InputIterator y,
 
   // See comments in count_gt. We need both conditional compilation and
   // SSE_LEVEL check.
-#if !defined(NTA_OS_WINDOWS) && defined(NTA_ASM)
+#if !defined(NTA_OS_WINDOWS) && defined(NTA_ASM) && !defined(NTA_PROCESSOR_ARM64)
 
   if (SSE_LEVEL >= 3) {
 
@@ -4608,7 +4608,7 @@ inline void in_place_logical_and(Iterator x, Iterator x_end, Iterator y,
 
   // See comments in count_gt. We need conditional compilation
   // _AND_ SSE_LEVEL check.
-#if (defined(NTA_OS_LINUX) || defined(NTA_OS_DARWIN)) && defined(NTA_ASM)
+#if (defined(NTA_OS_LINUX) || defined(NTA_OS_DARWIN)) && defined(NTA_ASM) && !defined(NTA_PROCESSOR_ARM64)
 
   if (SSE_LEVEL >= 3) {
 

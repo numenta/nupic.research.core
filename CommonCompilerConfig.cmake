@@ -66,10 +66,6 @@
 #                      and shared libraries (DLLs) with optimizations that are
 #                      compatible with INTERNAL_CXX_FLAGS_OPTIMIZED
 #
-# PYEXT_LINKER_FLAGS_OPTIMIZED: string of linker flags for linking python extension
-#                      shared libraries (DLLs) with optimizations that are
-#                      compatible with EXTERNAL_CXX_FLAGS_OPTIMIZED.
-#
 # CMAKE_AR: Name of archiving tool (ar) for static libraries. See cmake documentation
 #
 # CMAKE_RANLIB: Name of randomizing tool (ranlib) for static libraries. See cmake documentation
@@ -95,8 +91,6 @@ set(COMMON_COMPILER_DEFINITIONS_STR)
 
 set(INTERNAL_CXX_FLAGS_OPTIMIZED)
 set(INTERNAL_LINKER_FLAGS_OPTIMIZED)
-
-set(PYEXT_LINKER_FLAGS_OPTIMIZED)
 
 set(EXTERNAL_C_FLAGS_UNOPTIMIZED)
 set(EXTERNAL_C_FLAGS_OPTIMIZED)
@@ -182,23 +176,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-  if (${NUPIC_BUILD_PYEXT_MODULES} AND "${PLATFORM}" STREQUAL "linux")
-    # NOTE When building manylinux python extensions, we want the static
-    # libstdc++ due to differences in c++ ABI between the older toolchain in the
-    # manylinux Docker image and libstdc++ in newer linux distros that is
-    # compiled with the c++11 ABI. for example, with shared libstdc++, the
-    # manylinux-built extension is unable to catch std::ios::failure exception
-    # raised by the shared libstdc++.so while running on Ubuntu 16.04.
-    set(stdlib_cxx "${stdlib_cxx} -static-libstdc++")
-
-    # NOTE We need to use shared libgcc to be able to throw and catch exceptions
-    # across different shared libraries, as may be the case when our python
-    # extensions runtime-link to capnproto symbols in pycapnp's extension.
-    set(stdlib_common "${stdlib_common} -shared-libgcc")
-  else()
-    set(stdlib_common "${stdlib_common} -static-libgcc")
-    set(stdlib_cxx "${stdlib_cxx} -static-libstdc++")
-  endif()
+  set(stdlib_common "${stdlib_common} -static-libgcc")
+  set(stdlib_cxx "${stdlib_cxx} -static-libstdc++")
 endif()
 
 
@@ -251,13 +230,6 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 else()
   # LLVM Clang / Gnu GCC
   set(cxx_flags_unoptimized "${cxx_flags_unoptimized} ${stdlib_cxx} -std=c++11")
-
-  if (${NUPIC_BUILD_PYEXT_MODULES})
-    # Hide all symbols in DLLs except the ones with explicit visibility;
-    # see https://gcc.gnu.org/wiki/Visibility
-    set(cxx_flags_unoptimized "${cxx_flags_unoptimized} -fvisibility-inlines-hidden")
-    set(shared_compile_flags "${shared_compile_flags} -fvisibility=hidden")
-  endif()
 
   set(shared_compile_flags "${shared_compile_flags} ${stdlib_common} -fdiagnostics-show-option")
   set (internal_compiler_warning_flags "${internal_compiler_warning_flags} -Werror -Wextra -Wreturn-type -Wunused -Wno-unused-variable -Wno-unused-parameter -Wno-missing-field-initializers")
@@ -374,10 +346,6 @@ set(INTERNAL_LINKER_FLAGS_OPTIMIZED "${complete_linker_flags_unoptimized} ${opti
 set(EXTERNAL_C_FLAGS_UNOPTIMIZED "${build_type_specific_compile_flags} ${shared_compile_flags} ${external_compiler_warning_flags}")
 set(EXTERNAL_C_FLAGS_OPTIMIZED "${EXTERNAL_C_FLAGS_UNOPTIMIZED} ${optimization_flags_cc}")
 
-set(PYEXT_LINKER_FLAGS_OPTIMIZED "${build_type_specific_linker_flags} ${shared_linker_flags_unoptimized}")
-set(PYEXT_LINKER_FLAGS_OPTIMIZED "${PYEXT_LINKER_FLAGS_OPTIMIZED} ${optimization_flags_lt}")
-set(PYEXT_LINKER_FLAGS_OPTIMIZED "${PYEXT_LINKER_FLAGS_OPTIMIZED} ${allow_link_with_undefined_symbols_flags}")
-
 set(EXTERNAL_CXX_FLAGS_UNOPTIMIZED "${build_type_specific_compile_flags} ${shared_compile_flags} ${external_compiler_warning_flags} ${cxx_flags_unoptimized}")
 set(EXTERNAL_CXX_FLAGS_OPTIMIZED "${EXTERNAL_CXX_FLAGS_UNOPTIMIZED} ${optimization_flags_cc}")
 
@@ -397,7 +365,6 @@ message(STATUS "INTERNAL_CXX_FLAGS_OPTIMIZED=${INTERNAL_CXX_FLAGS_OPTIMIZED}")
 message(STATUS "INTERNAL_LINKER_FLAGS_OPTIMIZED=${INTERNAL_LINKER_FLAGS_OPTIMIZED}")
 message(STATUS "EXTERNAL_C_FLAGS_UNOPTIMIZED=${EXTERNAL_C_FLAGS_UNOPTIMIZED}")
 message(STATUS "EXTERNAL_C_FLAGS_OPTIMIZED=${EXTERNAL_C_FLAGS_OPTIMIZED}")
-message(STATUS "PYEXT_LINKER_FLAGS_OPTIMIZED=${PYEXT_LINKER_FLAGS_OPTIMIZED}")
 message(STATUS "EXTERNAL_CXX_FLAGS_UNOPTIMIZED=${EXTERNAL_CXX_FLAGS_UNOPTIMIZED}")
 message(STATUS "EXTERNAL_CXX_FLAGS_OPTIMIZED=${EXTERNAL_CXX_FLAGS_OPTIMIZED}")
 message(STATUS "EXTERNAL_LINKER_FLAGS_UNOPTIMIZED=${EXTERNAL_LINKER_FLAGS_UNOPTIMIZED}")
