@@ -69,9 +69,16 @@ void module_add_math(py::module &m) {
            }
            )
       )
+    .def("_writeAsCapnpPyBytes", [](Random &self) {
+      return nupic::PyCapnpHelper::writeAsPyBytes(self);
+    })
+    .def("_initFromCapnpPyBytes", [](Random &self, py::object pyBytes) {
+      nupic::PyCapnpHelper::initFromPyBytes(self, pyBytes.ptr());
+    })
     .def("getUInt32", &Random::getUInt32, "", py::arg("max") = Random::MAX32)
     .def("getUInt64", &Random::getUInt64, "", py::arg("max") = Random::MAX64)
     .def("getReal64", &Random::getReal64)
+    .def("getSeed", &Random::getSeed)
     .def("shuffle", [](Random &self, py::array arr) {
       if (arr.ndim() != 1) {
         throw std::invalid_argument("Only one dimensional arrays are supported.");

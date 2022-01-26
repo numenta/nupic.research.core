@@ -56,11 +56,11 @@ class TestNupicRandom(unittest.TestCase):
     r.write(builderProto)
     readerProto = RandomProto.from_bytes(builderProto.to_bytes())
 
-    test1 = [r.getUInt32() for _ in xrange(10)]
+    test1 = [r.getUInt32() for _ in range(10)]
     r = Random(1);
     r.read(readerProto)
     self.assertEqual(r.getSeed(), 99)
-    test2 = [r.getUInt32() for _ in xrange(10)]
+    test2 = [r.getUInt32() for _ in range(10)]
 
     self.assertEqual(test1, test2,
                      "Simple NuPIC random capnp serialization check failed.")
@@ -73,11 +73,11 @@ class TestNupicRandom(unittest.TestCase):
     r.write(builderProto)
     readerProto = RandomProto.from_bytes(builderProto.to_bytes())
 
-    test3 = [r.getUInt32() for _ in xrange(10)]
+    test3 = [r.getUInt32() for _ in range(10)]
     r = Random();
     r.read(readerProto)
     self.assertEqual(r.getSeed(), 99)
-    test4 = [r.getUInt32() for _ in xrange(10)]
+    test4 = [r.getUInt32() for _ in range(10)]
 
     self.assertEqual(
       test3, test4,

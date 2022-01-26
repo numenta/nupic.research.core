@@ -56,7 +56,7 @@ public:
    * :example: PyObject* pyBytes = PyCapnpHelper::writeAsPyBytes(*netPtr);
    */
   template <class MessageType>
-  static PyObject *writeAsPyBytes(const nupic::Serializable<MessageType> &obj) {
+  static pybind11::bytes writeAsPyBytes(const nupic::Serializable<MessageType> &obj) {
 #if !CAPNP_LITE
     capnp::MallocMessageBuilder message;
     typename MessageType::Builder proto = message.initRoot<MessageType>();
@@ -66,10 +66,7 @@ public:
     // Extract message data and convert to Python byte object
     kj::Array<capnp::word> array = capnp::messageToFlatArray(message); // copy
     kj::ArrayPtr<kj::byte> byteArray = array.asBytes();
-    PyObject *result =
-        PyBytes_FromStringAndSize((const char *)byteArray.begin(),
-                                  byteArray.size()); // copy
-    return result;
+    return pybind11::bytes((const char *)byteArray.begin(), byteArray.size()); // copy
 #else
     throw std::logic_error(
         "PyCapnpHelper::writeAsPyBytes is not implemented when "
