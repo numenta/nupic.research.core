@@ -40,6 +40,12 @@ class get_pybind_include(object):
 
 
 sources = [
+    "src/PyApicalTiebreakTemporalMemory.cpp",
+    "src/PyConnections.cpp",
+    "src/PyRandom.cpp",
+    "src/PySparseBinaryMatrix.cpp",
+    "src/PySparseMatrix.cpp",
+    "src/PySparseMatrixConnections.cpp",
     "src/nupic_module.cpp",
 ]
 

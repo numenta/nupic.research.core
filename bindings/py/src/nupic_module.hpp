@@ -21,29 +21,10 @@
  */
 
 #include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-#include <pybind11/operators.h>
-#include <pybind11/stl.h>
 
-#include <vector>
-
-#include "nupic_module.hpp"
-
-namespace py = pybind11;
-
-
-PYBIND11_MODULE(_nupic, m)
-{
-  module_add_Connections(m);
-  module_add_ApicalTiebreakTemporalMemory(m);
-  module_add_Random(m);
-  module_add_SparseMatrix(m);
-  module_add_SparseBinaryMatrix(m);
-  module_add_SparseMatrixConnections(m);
-
-#ifdef VERSION_INFO
-  m.attr("__version__") = VERSION_INFO;
-#else
-  m.attr("__version__") = "dev";
-#endif
-}
+void module_add_Connections(pybind11::module &m);
+void module_add_ApicalTiebreakTemporalMemory(pybind11::module &m);
+void module_add_Random(pybind11::module &m);
+void module_add_SparseMatrix(pybind11::module &m);
+void module_add_SparseBinaryMatrix(pybind11::module &m);
+void module_add_SparseMatrixConnections(pybind11::module &m);
