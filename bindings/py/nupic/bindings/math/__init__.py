@@ -26,7 +26,40 @@ import numpy as np
 import _nupic
 
 
-Random = _nupic.Random
+try:
+    # NOTE need to import capnp first to activate the magic necessary for
+    # RandomProto_capnp, etc.
+    import capnp
+except ImportError:
+    capnp = None
+else:
+    from nupic.proto.RandomProto_capnp import RandomProto
+
+
+# Capnp reader traveral limit (see capnp::ReaderOptions)
+_TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
+
+
+class Random(_nupic.Random):
+    def write(self, pyBuilder):
+      """Serialize the Random instance using capnp.
+
+      :param: Destination RandomProto message builder
+      """
+      reader = RandomProto.from_bytes(
+          self._writeAsCapnpPyBytes(),
+          traversal_limit_in_words=_TRAVERSAL_LIMIT_IN_WORDS)
+      pyBuilder.from_dict(reader.to_dict())  # copy
+
+
+    def read(self, proto):
+      """Initialize the Random instance from the given RandomProto reader.
+
+      :param proto: RandomProto message reader containing data from a previously
+                    serialized Random instance.
+
+      """
+      self._initFromCapnpPyBytes(proto.as_builder().to_bytes()) # copy * 2
 
 
 def GetNTAReal():
