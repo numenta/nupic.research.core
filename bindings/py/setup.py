@@ -40,7 +40,7 @@ class get_pybind_include(object):
 
 
 sources = [
-    "src/math_module.cpp",
+    "src/nupic_module.cpp",
 ]
 
 debug_mode = False
