@@ -19,8 +19,12 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
-import numpy as np
+import glob
+import os
+import shutil
 import sys
+
+import numpy as np
 
 from setuptools import setup, Extension
 
@@ -66,25 +70,38 @@ if sys.platform == "darwin":
     compile_args += ["-std=c++14", "-mmacosx-version-min=10.10"]
     link_args += ["-stdlib=libc++", "-mmacosx-version-min=10.10"]
 
-module = Extension(
-    "_nupic",
-    sources=sources,
-    extra_objects=extra_objects,
-    extra_compile_args=compile_args,
-    extra_link_args=link_args,
-    include_dirs=["./src/",
-                  "./../../src/",
-                  "./../../src/external",
-                  "./../../external/common/include",
-                  f"../../build/{install_folder}/include",
-                  get_pybind_include(),
-                  get_pybind_include(user=True),
-                  np.get_include()]
-)
 
-setup(name="nupic.research.core",
-      version="1.1",
-      description="C++ core for nupic.research",
-      packages=["nupic.bindings.math"],
-      setup_requires=["pybind11"],
-      ext_modules=[module])
+if __name__ == "__main__":
+    # Copy the proto files into the proto Python package.
+    destDir = os.path.relpath(os.path.join("nupic", "proto"))
+    for protoPath in glob.glob(os.path.relpath(os.path.join(
+            "..", "..", "src", "nupic", "proto", "*.capnp"))):
+        shutil.copy(protoPath, destDir)
+
+    module = Extension(
+        "_nupic",
+        sources=sources,
+        extra_objects=extra_objects,
+        extra_compile_args=compile_args,
+        extra_link_args=link_args,
+        include_dirs=["./src/",
+                      "./../../src/",
+                      "./../../src/external",
+                      "./../../external/common/include",
+                      f"../../build/{install_folder}/include",
+                      get_pybind_include(),
+                      get_pybind_include(user=True),
+                      np.get_include()]
+    )
+
+    setup(name="nupic.research.core",
+          version="1.1",
+          description="C++ core for nupic.research",
+          packages=["nupic.bindings.math"],
+          package_data={
+              "nupic.proto": ["*.capnp"],
+              "nupic.bindings": ["*.so", "*.pyd"],
+              "nupic.bindings.tools": ["*.capnp"],
+          },
+          setup_requires=["pybind11"],
+          ext_modules=[module])

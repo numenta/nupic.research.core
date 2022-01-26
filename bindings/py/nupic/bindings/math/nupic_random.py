@@ -22,26 +22,19 @@
 import _nupic
 
 
-try:
-    # NOTE need to import capnp first to activate the magic necessary for
-    # RandomProto_capnp
-    import capnp
-except ImportError:
-    capnp = None
-else:
-    from nupic.proto.RandomProto_capnp import RandomProto
-
-
-# Capnp reader traveral limit (see capnp::ReaderOptions)
-_TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
-
-
 class Random(_nupic.Random):
     def write(self, pyBuilder):
       """Serialize the Random instance using capnp.
 
       :param: Destination RandomProto message builder
       """
+      # NOTE need to import capnp first to activate the magic necessary for
+      # RandomProto_capnp
+      import capnp
+      from nupic.proto.RandomProto_capnp import RandomProto
+      # Capnp reader traveral limit (see capnp::ReaderOptions)
+      _TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
+
       reader = RandomProto.from_bytes(
           self._writeAsCapnpPyBytes(),
           traversal_limit_in_words=_TRAVERSAL_LIMIT_IN_WORDS)

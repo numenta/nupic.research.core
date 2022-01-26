@@ -24,21 +24,6 @@ import numpy as np
 import _nupic
 
 
-try:
-    # NOTE need to import capnp first to activate the magic necessary for
-    # SparseMatrixProto
-    import capnp
-except ImportError:
-    capnp = None
-else:
-    from nupic.proto.SparseMatrixProto_capnp import SparseMatrixProto
-
-
-# Capnp reader traveral limit (see capnp::ReaderOptions)
-_TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
-
-
-
 class SparseMatrix(_nupic.SparseMatrix):
     def __init__(self, *args):
         """
@@ -204,8 +189,14 @@ class SparseMatrix(_nupic.SparseMatrix):
 
         :param: Destination SparseMatrixProto message builder
         """
-        reader = SparseMatrixProto.from_bytes(self._writeAsCapnpPyBytes(),
-                                              traversal_limit_in_words=_TRAVERSAL_LIMIT_IN_WORDS)
+        import capnp
+        from nupic.proto.SparseMatrixProto_capnp import SparseMatrixProto
+        # Capnp reader traveral limit (see capnp::ReaderOptions)
+        _TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
+
+        reader = SparseMatrixProto.from_bytes(
+            self._writeAsCapnpPyBytes(),
+            traversal_limit_in_words=_TRAVERSAL_LIMIT_IN_WORDS)
         pyBuilder.from_dict(reader.to_dict())  # copy
 
     @classmethod
