@@ -20,9 +20,6 @@
  * ----------------------------------------------------------------------
  */
 
-#ifndef NTA_PYBIND_ALGORITHMS
-#define NTA_PYBIND_ALGORITHMS
-
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -32,60 +29,18 @@
 
 #include <nupic/algorithms/ApicalTiebreakTemporalMemory.hpp>
 
+#include <nupic_module.hpp>
 #include "support/PyCapnp.hpp"
 #include "support/pybind_helpers.hpp"
 
 using nupic::Int;
 using nupic::UInt;
-using namespace nupic::algorithms::connections;
 using namespace nupic::algorithms::apical_tiebreak_temporal_memory;
 
 namespace py = pybind11;
 
 
-void module_add_algorithms(py::module &m) {
-  py::class_<Synapse>(m, "Synapse");
-  py::class_<SynapseData>(m, "SynapseData")
-    .def_readwrite("presynapticCell", &SynapseData::presynapticCell)
-    .def_readwrite("permanence", &SynapseData::permanence)
-    .def_readwrite("segment", &SynapseData::segment);
-  py::class_<SegmentData>(m, "SegmentData")
-    .def_readwrite("synapses",&SegmentData::synapses)
-    .def_readwrite("cell",&SegmentData::cell);
-  py::class_<CellData>(m, "CellData")
-    .def_readwrite("segments", &CellData::segments);
-
-  py::class_<Connections>(m, "Connections")
-    .def(py::init<>())
-    .def(py::init<CellIdx>())
-    .def("initialize", &Connections::initialize)
-    .def("createSegment", &Connections::createSegment)
-    .def("createSynapse", &Connections::createSynapse)
-    .def("destroySegment", &Connections::destroySegment)
-    .def("destroySynapse", &Connections::destroySynapse)
-    .def("updateSynapsePermanence", &Connections::updateSynapsePermanence)
-    .def("segmentsForCell", &Connections::segmentsForCell)
-    .def("synapsesForSegment", &Connections::synapsesForSegment)
-    .def("cellForSegment", &Connections::cellForSegment)
-    .def("idxOnCellForSegment", &Connections::idxOnCellForSegment)
-    .def("mapSegmentsToCells", [](Connections &self, py::array_t<Segment> segments) {
-      py::array_t<CellIdx> cells(segments.size());
-      self.mapSegmentsToCells(arr_begin(segments), arr_end(segments), arr_begin(cells));
-      return cells;
-    })
-    .def("segmentForSynapse", &Connections::segmentForSynapse)
-    .def("dataForSegment", &Connections::dataForSegment)
-    .def("dataForSynapse", &Connections::dataForSynapse)
-    .def("getSegment", &Connections::getSegment)
-    .def("segmentFlatListLength", &Connections::segmentFlatListLength)
-    .def("compareSegments", &Connections::compareSegments)
-    .def("synapsesForPresynapticCell", &Connections::synapsesForPresynapticCell)
-    .def("numCells", &Connections::numCells)
-    .def("numSegments", static_cast<UInt (Connections::*)() const>(&Connections::numSegments))
-    .def("numSegments", static_cast<UInt (Connections::*)(CellIdx) const>(&Connections::numSegments))
-    .def("numSynapses", static_cast<UInt (Connections::*)() const>(&Connections::numSynapses))
-    .def("numSynapses", static_cast<UInt (Connections::*)(Segment) const>(&Connections::numSynapses));
-
+void module_add_ApicalTiebreakTemporalMemory(py::module &m) {
   py::class_<ApicalTiebreakTemporalMemory>(m, "ApicalTiebreakTemporalMemory")
     .def(py::init<>())
     .def(py::init<UInt, UInt, UInt, UInt, UInt, Permanence, Permanence, UInt,
@@ -205,7 +160,5 @@ void module_add_algorithms(py::module &m) {
         py::cast(self.getNextApicalPredictedCells())
         );
     });
-
 }
 
-#endif // NTA_PYBIND_ALGORITHMS
