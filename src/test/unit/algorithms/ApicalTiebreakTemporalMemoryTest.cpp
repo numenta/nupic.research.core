@@ -35,7 +35,7 @@
 #include "gtest/gtest.h"
 
 using namespace nupic;
-using namespace nupic::experimental::apical_tiebreak_temporal_memory;
+using namespace nupic::algorithms::apical_tiebreak_temporal_memory;
 using namespace std;
 
 #define EPSILON 0.0000001

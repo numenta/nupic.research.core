@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PYBIND_MATH
+#define NTA_PYBIND_MATH
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -32,6 +35,7 @@
 #include "nupic/math/SparseMatrixConnections.hpp"
 #include "nupic/utils/Random.hpp"
 #include "support/PyCapnp.hpp"
+#include "support/pybind_helpers.hpp"
 
 using std::pair;
 using std::vector;
@@ -45,22 +49,7 @@ using nupic::Random;
 namespace py = pybind11;
 
 
-template <typename T>
-T* arr_begin(py::array_t<T> &arr)
-{
-  return (T*)arr.request().ptr;
-}
-
-
-template <typename T>
-T* arr_end(py::array_t<T> &arr)
-{
-  return (T*)arr_begin(arr) + arr.size();
-}
-
-
-PYBIND11_MODULE(_nupic, m)
-{
+void module_add_math(py::module &m) {
   py::class_<Random>(m, "Random")
     .def(py::init<>())
     .def(py::init<UInt64>())
@@ -407,10 +396,6 @@ PYBIND11_MODULE(_nupic, m)
       self.mapSegmentsToCells(arr_begin(segments), arr_end(segments), arr_begin(cells));
       return cells;
     });
-
-#ifdef VERSION_INFO
-  m.attr("__version__") = VERSION_INFO;
-#else
-  m.attr("__version__") = "dev";
-#endif
 }
+
+#endif // NTA_PYBIND_MATH

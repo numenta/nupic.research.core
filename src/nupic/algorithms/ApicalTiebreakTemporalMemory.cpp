@@ -50,8 +50,8 @@
 
 using namespace std;
 using namespace nupic;
+using namespace nupic::algorithms::apical_tiebreak_temporal_memory;
 using namespace nupic::algorithms::connections;
-using namespace nupic::experimental::apical_tiebreak_temporal_memory;
 
 static const Permanence EPSILON = 0.000001;
 static const UInt TM_VERSION = 1;
@@ -1640,7 +1640,7 @@ getComparableSegmentSet(const Connections& connections,
   return segmentSet;
 }
 
-bool ApicalTiebreakTemporalMemory::operator==(const ApicalTiebreakTemporalMemory& other)
+bool ApicalTiebreakTemporalMemory::operator==(const ApicalTiebreakTemporalMemory& other) const
 {
   if (columnCount_ != other.columnCount_ ||
       basalInputSize_ != other.basalInputSize_ ||
@@ -1693,7 +1693,7 @@ bool ApicalTiebreakTemporalMemory::operator==(const ApicalTiebreakTemporalMemory
   return true;
 }
 
-bool ApicalTiebreakTemporalMemory::operator!=(const ApicalTiebreakTemporalMemory& other)
+bool ApicalTiebreakTemporalMemory::operator!=(const ApicalTiebreakTemporalMemory& other) const
 {
   return !(*this == other);
 }

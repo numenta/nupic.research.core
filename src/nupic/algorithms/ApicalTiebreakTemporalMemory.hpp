@@ -35,7 +35,7 @@
 #include <nupic/proto/ApicalTiebreakTemporalMemoryProto.capnp.h>
 
 namespace nupic {
-  namespace experimental {
+  namespace algorithms {
     namespace apical_tiebreak_temporal_memory {
 
       using namespace algorithms::connections;
@@ -382,8 +382,8 @@ namespace nupic {
         void write(ApicalTiebreakTemporalMemoryProto::Builder& proto) const;
         void read(ApicalTiebreakTemporalMemoryProto::Reader& proto);
 
-        bool operator==(const ApicalTiebreakTemporalMemory& other);
-        bool operator!=(const ApicalTiebreakTemporalMemory& other);
+        bool operator==(const ApicalTiebreakTemporalMemory& other) const;
+        bool operator!=(const ApicalTiebreakTemporalMemory& other) const;
 
         //----------------------------------------------------------------------
         // Debugging helpers
@@ -754,7 +754,7 @@ namespace nupic {
       };
 
     } // end namespace apical_tiebreak_temporal_memory
-  } // end namespace experimental
+  } // end namespace algorithms
 } // end namespace nupic
 
 #endif // NTA_APICAL_TIEBREAK_TM_HPP
