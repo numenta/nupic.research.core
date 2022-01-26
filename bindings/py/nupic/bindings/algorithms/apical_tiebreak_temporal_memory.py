@@ -24,24 +24,6 @@ import numpy as np
 import _nupic
 
 
-try:
-    # NOTE need to import capnp first to activate the magic necessary for
-    # ApicalTiebreakTemporalMemory
-    import capnp
-except ImportError:
-    capnp = None
-else:
-    from nupic.proto.ApicalTiebreakTemporalMemoryProto_capnp import (
-        ApicalTiebreakSequenceMemoryProto,
-        ApicalTiebreakTemporalMemoryProto,
-    )
-
-
-# Capnp reader traveral limit (see capnp::ReaderOptions)
-_TRAVERSAL_LIMIT_IN_WORDS = 1 << 63
-
-
-
 class ApicalTiebreakPairMemory(_nupic.ApicalTiebreakPairMemory):
     def __init__(self,
                  columnCount=2048,
@@ -219,6 +201,11 @@ class ApicalTiebreakPairMemory(_nupic.ApicalTiebreakPairMemory):
 
       :param: Destination ApicalTiebreakTemporalMemoryProto message builder
       """
+      import capnp
+      from nupic.proto.ApicalTiebreakTemporalMemoryProto_capnp import (
+          ApicalTiebreakTemporalMemoryProto,
+      )
+
       reader = ApicalTiebreakTemporalMemoryProto.from_bytes(
         self._writeAsCapnpPyBytes()) # copy
       pyBuilder.from_dict(reader.to_dict())  # copy
@@ -387,6 +374,11 @@ class ApicalTiebreakSequenceMemory(_nupic.ApicalTiebreakSequenceMemory):
 
       :param: Destination ApicalTiebreakSequenceMemoryProto message builder
       """
+      import capnp
+      from nupic.proto.ApicalTiebreakTemporalMemoryProto_capnp import (
+          ApicalTiebreakSequenceMemoryProto,
+      )
+
       reader = ApicalTiebreakSequenceMemoryProto.from_bytes(
         self._writeAsCapnpPyBytes()) # copy
       pyBuilder.from_dict(reader.to_dict())  # copy
