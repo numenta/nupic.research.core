@@ -49,8 +49,30 @@ void module_add_SparseMatrix(py::module &m) {
     .def("nRows", &SparseMatrix32::nRows)
     .def("nCols", &SparseMatrix32::nCols)
     .def("resize", &SparseMatrix32::resize)
+    .def("threshold",
+         static_cast<void (SparseMatrix32::*)(const Real32&)>(&SparseMatrix32::threshold),
+         "", py::arg("threshold") = nupic::Epsilon)
+    .def("normalize", &SparseMatrix32::normalize, "", py::arg("val") = 1.0,
+         py::arg("exact") = false)
     .def("get", &SparseMatrix32::get)
     .def("set", &SparseMatrix32::set)
+    .def("setRowToZero", &SparseMatrix32::setRowToZero)
+    .def("setColToZero", &SparseMatrix32::setColToZero)
+    .def("CSRSize", &SparseMatrix32::CSRSize)
+    .def("toPyString", [](SparseMatrix32 &self) {
+      std::stringstream ss;
+      self.toCSR(ss);
+      return ss.str();
+    })
+    .def("clip", &SparseMatrix32::clip)
+    .def("add", static_cast<void (SparseMatrix32::*)(const SparseMatrix32&)>(&SparseMatrix32::add))
+    .def("addRows", [](SparseMatrix32 &self, py::array_t<UInt32> indicator) {
+      py::array_t<Real32> result(self.nCols());
+      self.addRows(arr_begin(indicator), arr_end(indicator),
+                   arr_begin(result), arr_end(result));
+      return result;
+    })
+    .def("addTwoRows", &SparseMatrix32::addTwoRows)
     .def("getRow", [](SparseMatrix32 &self, UInt32 row) {
       py::array_t<Int32> out(self.nCols());
       self.getRowToDense(row, arr_begin(out));
