@@ -19,6 +19,8 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
+import numbers
+
 import numpy as np
 
 import _nupic
@@ -38,7 +40,10 @@ class SparseMatrix(_nupic.SparseMatrix):
            SparseMatrix(numpy.array): Loads a SparseMatrix from a numpy array.
            SparseMatrix([[...],[...]]): Creates an array from a list of lists.
         """
-        serialized,dense,from01,fromstr3f = None,None,False,False
+        serialized = None
+        dense = None
+        from01 = False
+        fromstr3f = False
         fromSpecRowCols = False
 
         if (len(args) == 3) and isinstance(args[0], SparseMatrix):
@@ -58,21 +63,16 @@ class SparseMatrix(_nupic.SparseMatrix):
                 from01 = True
 
         if from01 or fromSpecRowCols:
-            this = super().__init__(1, 1)
+            super().__init__(1, 1)
         else:
-            this = super().__init__(*args)
-
-        try:
-            self.this.append(this)
-        except:
-            self.this = this
+            super().__init__(*args)
 
         if serialized is not None:
             s = serialized.split(None, 1)
             self.fromPyString(serialized)
 
         elif dense is not None:
-            self.fromDense(np.asarray(dense,dtype=np.float32))
+            self.fromDense(np.asarray(dense, dtype=np.float32))
 
         elif from01:
             nz_i,nz_j = args[0].getAllNonZeros(True)
@@ -81,7 +81,7 @@ class SparseMatrix(_nupic.SparseMatrix):
 
         elif fromstr3f:
             nz_i,nz_j,nz_v = args[1].getAllNonZeros(args[0], True)
-            self.setAllNonZeros(args[1].nRows(), args[1].nCols(), nz_i,nz_j,nz_v)
+            self.setAllNonZeros(args[1].nRows(), args[1].nCols(), nz_i, nz_j, nz_v)
 
         elif fromSpecRowCols:
             if args[2] == 0:
@@ -109,7 +109,7 @@ class SparseMatrix(_nupic.SparseMatrix):
                          doc="rows, cols")
 
     def getTransposed(self):
-        result = self.__class__()
+        result = SparseMatrix()
         self.transpose(result)
         return result
 
@@ -124,150 +124,132 @@ class SparseMatrix(_nupic.SparseMatrix):
         return result
 
     def __iadd__(self, other):
-        t = type(other).__name__
-        if t == "float32":
-            self.__add(other)
-        elif t == 'ndarray':
-            self.add(SparseMatrix(other))
-        elif t == 'SparseMatrix':
+        if isinstance(other, numbers.Number):
             self.add(other)
         else:
-            raise Exception("Can't use type: " + t)
+            t = type(other).__name__
+            if t == "ndarray":
+                self.add(SparseMatrix(other))
+            elif t == "SparseMatrix":
+                self.add(other)
+            else:
+                raise Exception("Can't use type: " + t)
         return self
 
     def __add__(self, other):
-        arg = None
         result = SparseMatrix(self)
-        t = type(other).__name__
-        if t == "float32":
-            result.__add(other)
-        elif t == 'ndarray':
-            result.add(SparseMatrix(other))
-        elif t == 'SparseMatrix':
-            result.add(other)
-        else:
-            raise Exception("Can't use type: " + t)
+        result.__iadd__(other)
         return result
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __isub__(self, other):
-        t = type(other).__name__
-        if t == "float32":
-            self.__subtract(other)
-        elif t == 'ndarray':
-            self.subtract(SparseMatrix(other))
-        elif t == 'SparseMatrix':
+        if isinstance(other, numbers.Number):
             self.subtract(other)
         else:
-            raise Exception("Can't use type: " + t)
+            t = type(other).__name__
+            if t == "ndarray":
+                self.subtract(SparseMatrix(other))
+            elif t == "SparseMatrix":
+                self.subtract(other)
+            else:
+                raise Exception("Can't use type: " + t)
         return self
 
     def __sub__(self, other):
         result = SparseMatrix(self)
-        t = type(other).__name__
-        if t == "float32":
-            result.__subtract(other)
-        elif t == 'ndarray':
-            result.subtract(SparseMatrix(other))
-        elif t == 'SparseMatrix':
-            result.subtract(other)
-        else:
-            raise Exception("Can't use type: " + t)
+        result.__isub__(other)
         return result
 
     def __rsub__(self, other):
         return self.__sub__(other)
 
     def __imul__(self, other):
-        t = type(other).__name__
-        if t == "float32":
-            self.__multiply(other)
-        elif t == 'SparseMatrix':
+        if isinstance(other, numbers.Number):
             self.multiply(other)
         else:
-            raise Exception("Can't use type: " + t)
+            t = type(other).__name__
+            if t == "SparseMatrix":
+                self.multiply(other)
+            else:
+                raise Exception("Can't use type: " + t)
         return self
 
     def __mul__(self, other):
-        t = type(other).__name__
-        arg = other
-        result = None
-        if t == "float32":
+        if isinstance(other, numbers.Number):
             result = SparseMatrix(self)
-            result.__multiply(arg)
-        elif t == 'ndarray':
-            if arg.ndim == 1:
-                result = np.array(self.rightVecProd(arg))
-            elif arg.ndim == 2:
-                arg = SparseMatrix(other)
-                result = SparseMatrix()
-                self.multiply(arg, result)
-            else:
-                raise Exception("Wrong ndim: " + str(arg.ndim))
-        elif t == 'SparseMatrix':
-            if other.nCols() == 1:
-                if self.nRows() == 1:
-                    result = self.rightVecProd(other.getCol(0))[0]
-                else:
-                    result_list = self.rightVecProd(other.getCol(0))
-                    result = SparseMatrix(self.nRows(), 0)
-                    result.addCol(result_list)
-            else:
-                result = SparseMatrix()
-                self.multiply(arg, result)
+            result.multiply(other)
         else:
-            raise Exception("Can't use type: " + t + " for multiplication")
+            t = type(other).__name__
+            arg = other
+            if t == 'ndarray':
+                if arg.ndim == 1:
+                    result = np.array(self.rightVecProd(arg))
+                elif arg.ndim == 2:
+                    arg = SparseMatrix(other)
+                    result = SparseMatrix()
+                    self.multiply(arg, result)
+                else:
+                    raise Exception("Wrong ndim: " + str(arg.ndim))
+            elif t == 'SparseMatrix':
+                if other.nCols() == 1:
+                    if self.nRows() == 1:
+                        result = self.rightVecProd(other.getCol(0))[0]
+                    else:
+                        result_list = self.rightVecProd(other.getCol(0))
+                        result = SparseMatrix(self.nRows(), 0)
+                        result.addCol(result_list)
+                else:
+                    result = SparseMatrix()
+                    self.multiply(arg, result)
+            else:
+                raise Exception("Can't use type: " + t + " for multiplication")
         return result
 
     def __rmul__(self, other):
-        t = type(other).__name__
-        arg = other
-        result = None
-        if t == "float32":
+        if isinstance(other, numbers.Number):
             result = SparseMatrix(self)
-            result.__multiply(arg)
-        elif t == 'ndarray':
-            if arg.ndim == 1:
-                result = np.array(self.leftVecProd(arg))
-            elif arg.ndim == 2:
-                arg = SparseMatrix(other)
-                result = SparseMatrix()
-                arg.multiply(self, result)
-            else:
-                raise Exception("Wrong ndim: " + str(arg.ndim))
-        elif t == 'SparseMatrix':
-            if other.nRows() == 1:
-                if self.nCols() == 1:
-                    result = self.leftVecProd(other.getRow(0))[0]
-                else:
-                    result_list = self.leftVecProd(other.getRow(0))
-                    result = SparseMatrix(self.nCols(), 0)
-                    result.addRow(result_list)
-            else:
-                result = SparseMatrix()
-                arg.multiply(self, result)
+            result.multiply(other)
         else:
-            raise Exception("Can't use type: " + t + " for multiplication")
+            t = type(other).__name__
+            arg = other
+            result = None
+            if t == 'ndarray':
+                if arg.ndim == 1:
+                    result = np.array(self.leftVecProd(arg))
+                elif arg.ndim == 2:
+                    arg = SparseMatrix(other)
+                    result = SparseMatrix()
+                    arg.multiply(self, result)
+                else:
+                    raise Exception("Wrong ndim: " + str(arg.ndim))
+            elif t == 'SparseMatrix':
+                if other.nRows() == 1:
+                    if self.nCols() == 1:
+                        result = self.leftVecProd(other.getRow(0))[0]
+                    else:
+                        result_list = self.leftVecProd(other.getRow(0))
+                        result = SparseMatrix(self.nCols(), 0)
+                        result.addRow(result_list)
+                else:
+                    result = SparseMatrix()
+                    arg.multiply(self, result)
+            else:
+                raise Exception("Can't use type: " + t + " for multiplication")
         return result
 
-    def __idiv__(self, other):
-        t = type(other).__name__
-        if t == "float32":
-            self.__divide(other)
+    def __itruediv__(self, other):
+        if isinstance(other, numbers.Number):
+            self.divide(other)
         else:
-            raise Exception("Can't use type: " + t)
+            raise Exception("Can't use type: " + type(other))
         return self
 
-    def __div__(self, other):
-        t = type(other).__name__
-        if t == "float32":
-            result = SparseMatrix(self)
-            result.__divide(other)
-            return result
-        else:
-            raise Exception("Can't use type: " + t)
+    def __truediv__(self, other):
+        result = SparseMatrix(self)
+        result.__itruediv__(other)
+        return result
 
     def fromDense(self, m):
         m = np.asarray(m, dtype="float32")
@@ -431,6 +413,8 @@ class SparseMatrix(_nupic.SparseMatrix):
         """ Get Cap'n Proto schema.
         :return: Cap'n Proto schema
         """
+        import capnp
+        from nupic.proto.SparseMatrixProto_capnp import SparseMatrixProto
         return SparseMatrixProto
 
     def read(self, proto):

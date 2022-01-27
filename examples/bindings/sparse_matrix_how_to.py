@@ -20,6 +20,7 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
+import numpy as np
 
 # SparseMatrix is a versatile class that offers a wide range of functionality.
 # This tutorial will introduce you to the main features of SparseMatrix.
@@ -32,12 +33,11 @@ from nupic.bindings.math import *
 # 1. Types of sparse matrices:
 # ===========================
 
-# There are three types of SparseMatrix, depending on the precision you need 
-# in your application: 32 and 32 bits. To create a SparseMatrix holding 
-# floating point values of the desired precision, simply specify it as the 
-# 'dtype' parameter in the constructor:
+# There is currently one type of SparseMatrix available via Python: float32.
+# The underlying C++ code can use other dtypes, but that capability has not yet
+# been added to the Python bindings.
 
-s = SparseMatrix(dtype='Float32')
+s = SparseMatrix()
 
 
 # 2. Global Epsilon:
@@ -53,7 +53,7 @@ s = SparseMatrix(dtype='Float32')
 # With NTA_DOUBLE_PRECISION or NTA_QUAD_PRECISION set at compile time, NuPIC can 
 # use 32 bits to represent floating point values. The global epsilon can 
 # then be set to smaller values via the variable nupic::Epsilon in nupic/math/math.hpp
-print('\nGlobal epsilon :', getGlobalEpsilon())
+# print('\nGlobal epsilon :', getGlobalEpsilon())
 
 
 # 3. Creation of sparse matrices:
@@ -62,12 +62,12 @@ print('\nGlobal epsilon :', getGlobalEpsilon())
 # There are several convenient ways to create sparse matrices. 
 # You can create a SparseMatrix by passing it a 2D array:
 
-s = SparseMatrix([[1,2],[3,4]], dtype='Float32')
+s = SparseMatrix([[1,2],[3,4]])
 print('\nFrom array 32\n', s)
 
-# ... or by passing it a numpy.array:
+# ... or by passing it a np.array:
 
-s = SparseMatrix(numpy.array([[1,2],[3,4]]),dtype='Float32')
+s = SparseMatrix(np.array([[1,2],[3,4]]))
 print('\nFrom numpy array 32\n', s)
 
 # ... or by using one of the shortcuts: SM32, SM32:
@@ -86,13 +86,13 @@ print('\nSparse matrix from string\n', s_string)
 
 # A sparse matrix can be converted to a dense one via toDense:
 
-a = numpy.array(s_string.toDense())
+a = np.array(s_string.toDense())
 print('\ntoDense\n', a)
 
 # To set a sparse matrix from a dense one, one can use fromDense:
 
 s = SM32()
-s.fromDense(numpy.random.random((4,4)))
+s.fromDense(np.random.random((4,4)))
 print('\nfromDense\n', s)
 
 # A sparse matrix can be serialized:
@@ -122,7 +122,7 @@ print('\nSerializing\n', s2)
 # all rows or all cols simultaneously. All col operations can be pretty efficient,
 # even if the internal storage is CSR.
 
-s = SM32(numpy.random.random((4,4)))
+s = SM32(np.random.random((4,4)))
 s.threshold(.5)
 
 print('\nPrint\n', s)
@@ -259,7 +259,7 @@ print('\nthreshold .1\n', s)
 # Element wise operations are prefixed with 'element'. There are row-oriented
 # column-oriented and whole matrix element-wise operations.
 
-s = SM32(numpy.random.random((4,4)))
+s = SM32(np.random.random((4,4)))
 print('\n', s)
 
 s.elementNZInverse()
@@ -296,7 +296,7 @@ print('sum = ', s.sum())
 s.transpose()
 print('\ntranspose\n', s)
 
-s2 = SM32(numpy.random.random((3,4)))
+s2 = SM32(np.random.random((3,4)))
 print('\n', s2)
 s2.transpose()
 print('\ntranspose rectangular\n', s2)
@@ -311,7 +311,7 @@ print('\ntranspose rectangular again\n', s2)
 # as well as specialized operations between the a vector and the rows
 # of the SparseMatrix.
 
-x = numpy.array([1,2,3,4])
+x = np.array([1,2,3,4])
 print('\nx = ', x)
 print('Product on the right:\n', s.rightVecProd(x))
 print('Product on the left:\n', s.leftVecProd(x))
@@ -337,8 +337,8 @@ print('\nInner product: ', s_row * s_col)
 print('\nOuter product:\n', s_col * s_row)
 
 # SparseMatrix supports matrix matrix multiplication:
-s1 = SM32(numpy.random.random((4,4)))
-s2 = SM32(numpy.random.random((4,4)))
+s1 = SM32(np.random.random((4,4)))
+s2 = SM32(np.random.random((4,4)))
 
 print('\nmatrix matrix multiplication\n', s1 * s2)
 
@@ -355,7 +355,7 @@ print(a.blockRightVecProd(2, x))
 # To do an element multiplication of two matrices, do:
 
 print(a)
-b = SM32(numpy.random.randint(0,2,(4,4)))
+b = SM32(np.random.randint(0,2,(4,4)))
 print(b)
 a.elementNZMultiply(b)
 print(a)
@@ -403,7 +403,7 @@ print('\n/= -1.5\n', s)
 # are relative to the orignal matrix. countWhereEqual is faster than using len()
 # on the list returned by whereEqual.
 
-s = SM32(numpy.random.randint(0,3,(5,5)))
+s = SM32(np.random.randint(0,3,(5,5)))
 
 print('\nThe matrix is now:\n', s)
 print('\nNumber of elements equal to 0=', s.countWhereEqual(0,5,0,5,0))

@@ -102,8 +102,8 @@ void add_to(py::module &m) {
     .def("_writeAsCapnpPyBytes", [](SparseBinaryMatrix32 &self) {
       return nupic::PyCapnpHelper::writeAsPyBytes(self);
     })
-    .def("_initFromCapnpPyBytes", [](SparseBinaryMatrix32 &self, PyObject* pyBytes) {
-      nupic::PyCapnpHelper::initFromPyBytes(self, pyBytes);
+    .def("_initFromCapnpPyBytes", [](SparseBinaryMatrix32 &self, py::bytes bytes) {
+      nupic::PyCapnpHelper::initFromPyBytes(self, bytes.ptr());
     })
     .def("_rightVecSumAtNZ", [](SparseBinaryMatrix32 &self,
                                 py::array_t<UInt32> x,
