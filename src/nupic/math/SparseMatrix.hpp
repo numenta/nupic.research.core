@@ -1324,7 +1324,7 @@ public:
 
     for (size_type r = 0; r != nrows; ++r) {
 
-      std::random_shuffle(col_ind.begin(), col_ind.end(), rng);
+      std::shuffle(col_ind.begin(), col_ind.end(), rng);
       std::sort(col_ind.begin(), col_ind.begin() + nnzr);
       nnzr_[r] = nnzr;
       ind_[r] = new size_type[nnzr];
