@@ -57,6 +57,22 @@ Once it is installed, you can import NuPIC bindings library to your python scrip
 
     import nupic.bindings
 
+## Adding to the bindings
+
+Suppose you want to add bindings for `src/nupic/algorithms/MyCode.cpp`. Follow these steps:
+
+- Create `/bindings/py/src/PyMyCode.hpp`, following the example of other files in that folder.
+  - Implement the function `nupic::py_my_code::add_to`.
+- Call this function in `/bindings/py/src/nupic_module.cpp`.
+  - Import `PyMyCode.hpp`
+  - Call `nupic::py_my_code::add_to`
+  - With these additions, your code is now now available to Python via the `_nupic` module.
+- Explicitly import your code somewhere in `nupic.bindings`
+  - For example, add `bindings/py/nupic/algorithms/my_code.py`, which could contain `from _nupic import my_function, MyClass`
+  - Optional: add Python functions or classes to this file. You may want to subclass `MyClass` and add additional Python logic.
+
+Whenever you change `src/nupic/algorithms/MyCode.cpp`, remember to rebuild (`make -j3` from `build/scripts`, as above), then run `pip install -e .` from the folder `bindings/py` to rebuild the bindings.
+
 ### Using graphical interface
 
 #### Generate the IDE solution:
