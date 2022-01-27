@@ -31,6 +31,7 @@
 #include "PyApicalTiebreakTemporalMemory.hpp"
 #include "PyConnections.hpp"
 #include "PyRandom.hpp"
+#include "PySegmentSparseMatrix.hpp"
 #include "PySparseBinaryMatrix.hpp"
 #include "PySparseMatrixConnections.hpp"
 #include "PySparseMatrix.hpp"
@@ -43,6 +44,7 @@ PYBIND11_MODULE(_nupic, m)
   nupic::py_connections::add_to(m);
   nupic::py_apical_tiebreak_temporal_memory::add_to(m);
   nupic::py_random::add_to(m);
+  nupic::py_segment_sparse_matrix::add_to(m);
   nupic::py_sparse_matrix::add_to(m);
   nupic::py_sparse_binary_matrix::add_to(m);
   nupic::py_sparse_matrix_connections::add_to(m);

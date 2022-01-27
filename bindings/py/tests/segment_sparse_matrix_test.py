@@ -47,7 +47,7 @@ class SegmentSparseMatrixTest(unittest.TestCase):
     ssm.destroySegments([created[1], created[2], created[3]])
     ssm.createSegments([50, 51, 52, 53])
 
-    self.assertEquals(6, ssm.matrix.nRows())
+    self.assertEqual(6, ssm.matrix.nRows())
 
 
   def testGetSegmentCounts(self):

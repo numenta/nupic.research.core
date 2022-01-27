@@ -46,7 +46,10 @@ namespace py = pybind11;
 
 
 void add_to(py::module &m) {
-  py::class_<SparseMatrixConnections>(m, "SparseMatrixConnections")
+  typedef nupic::SparseMatrix<UInt32, Real32, Int32, Real64, nupic::DistanceToZero<Real32>> SparseMatrix32;
+  typedef SegmentMatrixAdapter<SparseMatrix32> SegmentSparseMatrix;
+
+  py::class_<SparseMatrixConnections, SegmentSparseMatrix>(m, "SparseMatrixConnections")
     .def(py::init<UInt32, UInt32>())
     .def("_computeActivity", [](SparseMatrixConnections &self,
                                 py::array_t<UInt32> activeInputs,
@@ -127,47 +130,6 @@ void add_to(py::module &m) {
       self.mapSegmentsToSynapseCounts(arr_begin(segments), arr_end(segments),
                                       arr_begin(out));
       return out;
-    })
-
-    //
-    // SegmentMatrixAdapter methods
-    //
-    .def("nCells", &SparseMatrixConnections::nCells)
-    .def("nSegments", &SparseMatrixConnections::nSegments)
-    .def("_createSegments", [](SparseMatrixConnections &self, py::array_t<UInt32> cells) {
-      py::array_t<UInt32> segments(cells.size());
-      self.createSegments(arr_begin(cells), arr_end(cells), arr_begin(segments));
-      return segments;
-    })
-    .def("_destroySegments", [](SparseMatrixConnections &self,
-                                py::array_t<UInt32> segments) {
-      self.destroySegments(arr_begin(segments), arr_end(segments));
-    })
-    .def("_getSegmentCounts", [](SparseMatrixConnections &self, py::array_t<UInt32> cells) {
-      py::array_t<Int32> counts(cells.size());
-      self.getSegmentCounts(arr_begin(cells), arr_end(cells), arr_begin(counts));
-      return counts;
-    })
-    .def("_getSegmentsForCell", [](SparseMatrixConnections &self, UInt32 cell) {
-      return py::array_t<UInt32>(
-        py::cast(self.getSegmentsForCell(cell)));
-    })
-    .def("_sortSegmentsByCell", [](SparseMatrixConnections &self,
-                                   py::array_t<UInt32> segments) {
-      self.sortSegmentsByCell(arr_begin(segments), arr_end(segments));
-    })
-    .def("_filterSegmentsByCell", [](SparseMatrixConnections &self,
-                                     py::array_t<UInt32> segments,
-                                     py::array_t<UInt32> cells) {
-      return py::array_t<UInt32>(
-        py::cast(
-          self.filterSegmentsByCell(arr_begin(segments), arr_end(segments),
-                                    arr_begin(cells), arr_end(cells))));
-    })
-    .def("_mapSegmentsToCells", [](SparseMatrixConnections &self, py::array_t<UInt32> segments) {
-      py::array_t<UInt32> cells(segments.size());
-      self.mapSegmentsToCells(arr_begin(segments), arr_end(segments), arr_begin(cells));
-      return cells;
     });
 }
 

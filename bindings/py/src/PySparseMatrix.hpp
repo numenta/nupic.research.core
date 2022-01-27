@@ -42,13 +42,14 @@ using nupic::Int32;
 using nupic::UInt32;
 using nupic::UInt64;
 using nupic::Real32;
+using nupic::Real64;
 
 namespace py = pybind11;
 
 
 void add_to(py::module &m) {
 
-  typedef nupic::SparseMatrix<UInt32, Real32, Int32, Real32, nupic::DistanceToZero<Real32>> SparseMatrix32;
+  typedef nupic::SparseMatrix<UInt32, Real32, Int32, Real64, nupic::DistanceToZero<Real32>> SparseMatrix32;
 
   py::class_<SparseMatrix32>(m, "SparseMatrix")
     .def(py::init<>())
