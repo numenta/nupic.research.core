@@ -28,18 +28,24 @@
 #include <vector>
 
 #include "nupic_module.hpp"
+#include "PyApicalTiebreakTemporalMemory.hpp"
+#include "PyConnections.hpp"
+#include "PyRandom.hpp"
+#include "PySparseBinaryMatrix.hpp"
+#include "PySparseMatrixConnections.hpp"
+#include "PySparseMatrix.hpp"
 
 namespace py = pybind11;
 
 
 PYBIND11_MODULE(_nupic, m)
 {
-  module_add_Connections(m);
-  module_add_ApicalTiebreakTemporalMemory(m);
-  module_add_Random(m);
-  module_add_SparseMatrix(m);
-  module_add_SparseBinaryMatrix(m);
-  module_add_SparseMatrixConnections(m);
+  nupic::py_connections::add_to(m);
+  nupic::py_apical_tiebreak_temporal_memory::add_to(m);
+  nupic::py_random::add_to(m);
+  nupic::py_sparse_matrix::add_to(m);
+  nupic::py_sparse_binary_matrix::add_to(m);
+  nupic::py_sparse_matrix_connections::add_to(m);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;

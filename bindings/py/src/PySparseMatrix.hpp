@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PY_SPARSE_MATRIX
+#define NTA_PY_SPARSE_MATRIX
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -31,6 +34,9 @@
 #include "support/PyCapnp.hpp"
 #include "support/pybind_helpers.hpp"
 
+namespace nupic {
+namespace py_sparse_matrix {
+
 using nupic::Int32;
 using nupic::UInt32;
 using nupic::UInt64;
@@ -39,7 +45,7 @@ using nupic::Real32;
 namespace py = pybind11;
 
 
-void module_add_SparseMatrix(py::module &m) {
+void add_to(py::module &m) {
 
   typedef nupic::SparseMatrix<UInt32, Real32, Int32, Real32, nupic::DistanceToZero<Real32>> SparseMatrix32;
 
@@ -49,8 +55,30 @@ void module_add_SparseMatrix(py::module &m) {
     .def("nRows", &SparseMatrix32::nRows)
     .def("nCols", &SparseMatrix32::nCols)
     .def("resize", &SparseMatrix32::resize)
+    .def("threshold",
+         static_cast<void (SparseMatrix32::*)(const Real32&)>(&SparseMatrix32::threshold),
+         "", py::arg("threshold") = nupic::Epsilon)
+    .def("normalize", &SparseMatrix32::normalize, "", py::arg("val") = 1.0,
+         py::arg("exact") = false)
     .def("get", &SparseMatrix32::get)
     .def("set", &SparseMatrix32::set)
+    .def("setRowToZero", &SparseMatrix32::setRowToZero)
+    .def("setColToZero", &SparseMatrix32::setColToZero)
+    .def("CSRSize", &SparseMatrix32::CSRSize)
+    .def("toPyString", [](SparseMatrix32 &self) {
+      std::stringstream ss;
+      self.toCSR(ss);
+      return ss.str();
+    })
+    .def("clip", &SparseMatrix32::clip)
+    .def("add", static_cast<void (SparseMatrix32::*)(const SparseMatrix32&)>(&SparseMatrix32::add))
+    .def("addRows", [](SparseMatrix32 &self, py::array_t<UInt32> indicator) {
+      py::array_t<Real32> result(self.nCols());
+      self.addRows(arr_begin(indicator), arr_end(indicator),
+                   arr_begin(result), arr_end(result));
+      return result;
+    })
+    .def("addTwoRows", &SparseMatrix32::addTwoRows)
     .def("getRow", [](SparseMatrix32 &self, UInt32 row) {
       py::array_t<Int32> out(self.nCols());
       self.getRowToDense(row, arr_begin(out));
@@ -123,3 +151,9 @@ void module_add_SparseMatrix(py::module &m) {
                                              arr_begin(out), threshold);
     });
 }
+
+} // namespace py_sparse_matrix
+
+} // namespace nupic
+
+#endif  // NTA_PY_SPARSE_MATRIX

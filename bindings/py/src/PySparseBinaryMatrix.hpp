@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PY_SPARSE_BINARY_MATRIX
+#define NTA_PY_SPARSE_BINARY_MATRIX
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -38,8 +41,11 @@ using nupic::Real32;
 
 namespace py = pybind11;
 
+namespace nupic {
+namespace py_sparse_binary_matrix {
 
-void module_add_SparseBinaryMatrix(py::module &m) {
+
+void add_to(py::module &m) {
 
   typedef nupic::SparseBinaryMatrix<UInt32, UInt32> SparseBinaryMatrix32;
 
@@ -106,3 +112,8 @@ void module_add_SparseBinaryMatrix(py::module &m) {
       self.rightVecSumAtNZ(arr_begin(x), arr_end(x), arr_begin(out), arr_end(out));
     });
 }
+
+} // namespace nupic
+} // namespace py_sparse_binary_matrix
+
+#endif // NTA_PY_SPARSE_BINARY_MATRIX
