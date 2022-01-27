@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PY_RANDOM
+#define NTA_PY_RANDOM
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -33,6 +36,9 @@
 #include "support/PyCapnp.hpp"
 #include "support/pybind_helpers.hpp"
 
+namespace nupic {
+namespace py_random {
+
 using std::pair;
 using std::vector;
 using nupic::Int32;
@@ -44,7 +50,7 @@ using nupic::Random;
 namespace py = pybind11;
 
 
-void module_add_Random(py::module &m) {
+void add_to(py::module &m) {
   py::class_<Random>(m, "Random")
     .def(py::init<>())
     .def(py::init<UInt64>())
@@ -128,3 +134,8 @@ void module_add_Random(py::module &m) {
       }
     });
 }
+
+} // namespace py_random
+} // namespace nupic
+
+#endif // NTA_PY_RANDOM

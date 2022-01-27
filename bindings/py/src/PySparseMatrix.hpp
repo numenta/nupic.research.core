@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PY_SPARSE_MATRIX
+#define NTA_PY_SPARSE_MATRIX
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -31,6 +34,9 @@
 #include "support/PyCapnp.hpp"
 #include "support/pybind_helpers.hpp"
 
+namespace nupic {
+namespace py_sparse_matrix {
+
 using nupic::Int32;
 using nupic::UInt32;
 using nupic::UInt64;
@@ -39,7 +45,7 @@ using nupic::Real32;
 namespace py = pybind11;
 
 
-void module_add_SparseMatrix(py::module &m) {
+void add_to(py::module &m) {
 
   typedef nupic::SparseMatrix<UInt32, Real32, Int32, Real32, nupic::DistanceToZero<Real32>> SparseMatrix32;
 
@@ -145,3 +151,9 @@ void module_add_SparseMatrix(py::module &m) {
                                              arr_begin(out), threshold);
     });
 }
+
+} // namespace py_sparse_matrix
+
+} // namespace nupic
+
+#endif  // NTA_PY_SPARSE_MATRIX

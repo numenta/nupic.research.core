@@ -44,13 +44,16 @@ class get_pybind_include(object):
 
 
 sources = [
+    "src/nupic_module.cpp",
+]
+depends = [
+    # This ensures the extension will be rebuilt if these files are changed.
     "src/PyApicalTiebreakTemporalMemory.cpp",
     "src/PyConnections.cpp",
     "src/PyRandom.cpp",
     "src/PySparseBinaryMatrix.cpp",
     "src/PySparseMatrix.cpp",
     "src/PySparseMatrixConnections.cpp",
-    "src/nupic_module.cpp",
 ]
 
 debug_mode = False
@@ -81,6 +84,7 @@ if __name__ == "__main__":
     module = Extension(
         "_nupic",
         sources=sources,
+        depends=depends,
         extra_objects=extra_objects,
         extra_compile_args=compile_args,
         extra_link_args=link_args,
