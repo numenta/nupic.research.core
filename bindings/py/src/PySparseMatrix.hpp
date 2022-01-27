@@ -29,6 +29,7 @@
 #include <pybind11/stl.h>
 
 #include <nupic/math/SparseMatrix.hpp>
+#include <nupic/utils/Random.hpp>
 
 #include <nupic_module.hpp>
 #include "support/PyCapnp.hpp"
@@ -107,6 +108,86 @@ void add_to(py::module &m) {
     })
     .def("_initFromCapnpPyBytes", [](SparseMatrix32 &self, PyObject* pyBytes) {
       nupic::PyCapnpHelper::initFromPyBytes(self, pyBytes);
+    })
+    .def("_incrementNonZerosOnOuter", [](SparseMatrix32 &self,
+                                         py::array_t<UInt32> rows,
+                                         py::array_t<UInt32> cols,
+                                         Real32 delta) {
+      self.incrementNonZerosOnOuter(arr_begin(rows), arr_end(rows),
+                                    arr_begin(cols), arr_end(cols),
+                                    delta);
+    })
+    .def("_incrementNonZerosOnRowsExcludingCols", [](SparseMatrix32 &self,
+                                                     py::array_t<UInt32> rows,
+                                                     py::array_t<UInt32> cols,
+                                                     Real32 delta) {
+      self.incrementNonZerosOnRowsExcludingCols(arr_begin(rows), arr_end(rows),
+                                                arr_begin(cols), arr_end(cols),
+                                                delta);
+    })
+    .def("_setZerosOnOuter", [](SparseMatrix32 &self,
+                                py::array_t<UInt32> rows,
+                                py::array_t<UInt32> cols,
+                                Real32 value) {
+      self.setZerosOnOuter(arr_begin(rows), arr_end(rows),
+                           arr_begin(cols), arr_end(cols),
+                           value);
+    })
+    .def("_setRandomZerosOnOuter_singleCount", [](SparseMatrix32 &self,
+                                                  py::array_t<UInt32> rows,
+                                                  py::array_t<UInt32> cols,
+                                                  Int32 numNewNonZeros,
+                                                  Real32 value,
+                                                  nupic::Random& rng) {
+      self.setRandomZerosOnOuter(arr_begin(rows), arr_end(rows),
+                                 arr_begin(cols), arr_end(cols),
+                                 numNewNonZeros, value, rng);
+    })
+    .def("_setRandomZerosOnOuter_multipleCounts", [](SparseMatrix32 &self,
+                                                     py::array_t<UInt32> rows,
+                                                     py::array_t<UInt32> cols,
+                                                     py::array_t<Int32> numNewNonZeros,
+                                                     Real32 value,
+                                                     nupic::Random& rng) {
+      self.setRandomZerosOnOuter(arr_begin(rows), arr_end(rows),
+                                 arr_begin(cols), arr_end(cols),
+                                 arr_begin(numNewNonZeros), arr_end(numNewNonZeros),
+                                 value, rng);
+    })
+    .def("_increaseRowNonZeroCountsOnOuterTo", [](SparseMatrix32 &self,
+                                                  py::array_t<UInt32> rows,
+                                                  py::array_t<UInt32> cols,
+                                                  Int32 numDesiredNonZeros,
+                                                  Real32 initialValue,
+                                                  nupic::Random& rng) {
+      self.increaseRowNonZeroCountsOnOuterTo(arr_begin(rows), arr_end(rows),
+                                             arr_begin(cols), arr_end(cols),
+                                             numDesiredNonZeros, initialValue,
+                                             rng);
+    })
+    .def("_clipRowsBelowAndAbove", [](SparseMatrix32 &self, py::array_t<UInt32> rows,
+                                      Real32 a, Real32 b) {
+      self.clipRowsBelowAndAbove(arr_begin(rows), arr_end(rows), a, b);
+    })
+    .def("_nNonZerosPerRow_allRows", [](SparseMatrix32 &self) {
+      py::array_t<UInt32> out(self.nRows());
+      self.nNonZerosPerRow(arr_begin(out));
+      return out;
+    })
+    .def("_nNonZerosPerRow_allRows", [](SparseMatrix32 &self,
+                                        py::array_t<UInt32> rows) {
+      py::array_t<UInt32> out(self.nRows());
+      self.nNonZerosPerRow(arr_begin(rows), arr_end(rows), arr_begin(out));
+      return out;
+    })
+    .def("_nNonZerosPerRowOnCols", [](SparseMatrix32 &self,
+                                      py::array_t<UInt32> rows,
+                                      py::array_t<UInt32> cols) {
+      py::array_t<UInt32> out(self.nRows());
+      self.nNonZerosPerRowOnCols(arr_begin(rows), arr_end(rows),
+                                 arr_begin(cols), arr_end(cols),
+                                 arr_begin(out));
+      return out;
     })
     .def("_rightVecSumAtNZ", [](SparseMatrix32 &self,
                                 py::array_t<UInt32> denseArray,

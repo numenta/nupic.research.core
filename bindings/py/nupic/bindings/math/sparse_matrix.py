@@ -199,7 +199,7 @@ class SparseMatrix(_nupic.SparseMatrix):
             result.__multiply(arg)
         elif t == 'ndarray':
             if arg.ndim == 1:
-                result = numpy.array(self.rightVecProd(arg))
+                result = np.array(self.rightVecProd(arg))
             elif arg.ndim == 2:
                 arg = SparseMatrix(other)
                 result = SparseMatrix()
@@ -230,7 +230,7 @@ class SparseMatrix(_nupic.SparseMatrix):
             result.__multiply(arg)
         elif t == 'ndarray':
             if arg.ndim == 1:
-                result = numpy.array(self.leftVecProd(arg))
+                result = np.array(self.leftVecProd(arg))
             elif arg.ndim == 2:
                 arg = SparseMatrix(other)
                 result = SparseMatrix()
@@ -356,6 +356,60 @@ class SparseMatrix(_nupic.SparseMatrix):
         self._rightVecSumAtNZGteThresholdSparse(sparseBinaryArray, threshold, out)
 
         return out
+
+    def incrementNonZerosOnOuter(self, rows, cols, delta):
+      self._incrementNonZerosOnOuter(np.asarray(rows, dtype="uint32"),
+                                     np.asarray(cols, dtype="uint32"),
+                                     delta)
+
+    def incrementNonZerosOnRowsExcludingCols(self, rows, cols, delta):
+      self._incrementNonZerosOnRowsExcludingCols(np.asarray(rows, dtype="uint32"),
+                                                 np.asarray(cols, dtype="uint32"),
+                                                 delta)
+
+    def setZerosOnOuter(self, rows, cols, value):
+      self._setZerosOnOuter(np.asarray(rows, dtype="uint32"),
+                            np.asarray(cols, dtype="uint32"),
+                            value)
+
+    def setRandomZerosOnOuter(self, rows, cols, numNewNonZeros, value, rng):
+      if isinstance(numNewNonZeros, numbers.Number):
+        self._setRandomZerosOnOuter_singleCount(
+          np.asarray(rows, dtype="uint32"),
+          np.asarray(cols, dtype="uint32"),
+          numNewNonZeros,
+          value,
+          rng)
+      else:
+        self._setRandomZerosOnOuter_multipleCounts(
+          np.asarray(rows, dtype="uint32"),
+          np.asarray(cols, dtype="uint32"),
+          np.asarray(numNewNonZeros, dtype="int32"),
+          value,
+          rng)
+
+    def increaseRowNonZeroCountsOnOuterTo(self, rows, cols, numDesiredNonZeros,
+                                          initialValue, rng):
+      self._increaseRowNonZeroCountsOnOuterTo(
+        np.asarray(rows, dtype="uint32"),
+        np.asarray(cols, dtype="uint32"),
+        numDesiredNonZeros, initialValue, rng)
+
+    def clipRowsBelowAndAbove(self, rows, a, b):
+      self._clipRowsBelowAndAbove(np.asarray(rows, dtype="uint32"),
+                                  a,
+                                  b)
+
+    def nNonZerosPerRow(self, rows=None):
+      if rows is None:
+        return self._nNonZerosPerRow_allRows()
+      else:
+        return self._nNonZerosPerRow(np.asarray(rows, dtype="uint32"))
+
+    def nNonZerosPerRowOnCols(self, rows, cols):
+      rows = np.asarray(rows, dtype="uint32")
+      cols = np.asarray(cols, dtype="uint32")
+      return self._nNonZerosPerRowOnCols(rows, cols)
 
     def write(self, pyBuilder):
         """Serialize the SparseMatrix instance using capnp.
