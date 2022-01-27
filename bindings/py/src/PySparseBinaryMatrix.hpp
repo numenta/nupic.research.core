@@ -53,8 +53,7 @@ void add_to(py::module &m) {
     .def(py::init<UInt32>())
     .def(py::init<UInt32, UInt32>())
     .def("nRows", &SparseBinaryMatrix32::nRows)
-    // .def("nCols", py::overload_cast<void>(&SparseBinaryMatrix32::nCols))
-    .def("nCols", static_cast<UInt32 (SparseBinaryMatrix32::*)() const>(&SparseBinaryMatrix32::nCols))
+    .def("nCols", py::overload_cast<>(&SparseBinaryMatrix32::nCols, py::const_))
     .def("nNonZeros", &SparseBinaryMatrix32::nNonZeros)
     .def("nNonZerosOnRow", &SparseBinaryMatrix32::nNonZerosOnRow)
     .def("nNonZerosPerRow", [](SparseBinaryMatrix32 &self) {
