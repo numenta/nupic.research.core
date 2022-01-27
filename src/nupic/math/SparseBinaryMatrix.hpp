@@ -124,7 +124,7 @@ public:
 
     for (size_type i = 0; i != nRows(); ++i) {
       ind_[i].resize(nnz);
-      std::random_shuffle(buffer_.begin(), buffer_.end(), rng);
+      std::shuffle(buffer_.begin(), buffer_.end(), rng);
       std::copy(buffer_.begin(), buffer_.begin() + nnz, ind_[i].begin());
     }
 

@@ -1845,7 +1845,7 @@ inline void random_perm_interval(
   { NTA_ASSERT(begin <= end) << "random_perm_interval 1: Invalid input range"; }
 
   ramp_range(begin, end, start, step);
-  std::random_shuffle(begin, end, rng);
+  std::shuffle(begin, end, rng);
 }
 
 //--------------------------------------------------------------------------------
@@ -1971,7 +1971,7 @@ template <typename T, typename RNG>
 inline void random_sample(std::vector<T> &c, size_t size, size_t start,
                           size_t step, RNG &rng) {
   ramp_range(c, start, step);
-  std::random_shuffle(c.begin(), c.end(), rng);
+  std::shuffle(c.begin(), c.end(), rng);
 }
 
 //--------------------------------------------------------------------------------
@@ -1983,29 +1983,8 @@ inline void random_sample(std::vector<T> &c, size_t size, size_t start = 0,
 }
 
 //--------------------------------------------------------------------------------
-template <typename T> inline void random_sample(size_t n, std::vector<T> &a) {
-  NTA_ASSERT(0 < a.size());
-
-  std::vector<size_t> x(n);
-  for (size_t i = 0; i != n; ++i)
-    x[i] = i;
-  std::random_shuffle(x.begin(), x.end());
-  std::copy(x.begin(), x.begin() + a.size(), a.begin());
-}
-
-//--------------------------------------------------------------------------------
 template <typename T> inline void random_sample(std::vector<T> &a) {
   random_sample(a, a.size());
-}
-
-//--------------------------------------------------------------------------------
-template <typename T>
-inline void random_sample(const std::set<T> &a, std::vector<T> &b) {
-  NTA_ASSERT(0 < b.size());
-
-  std::vector<T> aa(a.begin(), a.end());
-  std::random_shuffle(aa.begin(), aa.end());
-  std::copy(aa.begin(), aa.begin() + b.size(), b.begin());
 }
 
 //--------------------------------------------------------------------------------
@@ -2046,7 +2025,7 @@ inline void random_pair_sample(size_t nrows, size_t ncols, size_t nnzpr,
   for (size_t i = 0; i != ncols; ++i)
     x[i] = i;
   for (size_t i = 0; i != nrows; ++i) {
-    std::random_shuffle(x.begin(), x.end(), rng);
+    std::shuffle(x.begin(), x.end(), rng);
     if (sorted)
       std::sort(x.begin(), x.begin() + nnzpr);
     size_t offset = i * nnzpr;
@@ -2135,11 +2114,6 @@ inline void gaussian_2d_pair_sample(size_t nrows, size_t ncols, size_t nnzpr,
     std::cout << counts[i] << " ";
   std::cout << std::endl;
   */
-}
-
-//--------------------------------------------------------------------------------
-template <typename T> inline void random_shuffle(std::vector<T> &x) {
-  std::random_shuffle(x.begin(), x.end());
 }
 
 //--------------------------------------------------------------------------------

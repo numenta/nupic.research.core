@@ -83,10 +83,10 @@ void add_to(py::module &m) {
     .def("compareSegments", &Connections::compareSegments)
     .def("synapsesForPresynapticCell", &Connections::synapsesForPresynapticCell)
     .def("numCells", &Connections::numCells)
-    .def("numSegments", static_cast<UInt (Connections::*)() const>(&Connections::numSegments))
-    .def("numSegments", static_cast<UInt (Connections::*)(CellIdx) const>(&Connections::numSegments))
-    .def("numSynapses", static_cast<UInt (Connections::*)() const>(&Connections::numSynapses))
-    .def("numSynapses", static_cast<UInt (Connections::*)(Segment) const>(&Connections::numSynapses));
+    .def("numSegments", py::overload_cast<>(&Connections::numSegments, py::const_))
+    .def("numSegments", py::overload_cast<CellIdx>(&Connections::numSegments, py::const_))
+    .def("numSynapses", py::overload_cast<>(&Connections::numSynapses, py::const_))
+    .def("numSynapses", py::overload_cast<Segment>(&Connections::numSynapses, py::const_));
 }
 
 } // namespace py_connections

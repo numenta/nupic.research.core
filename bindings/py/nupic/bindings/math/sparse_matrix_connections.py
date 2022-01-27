@@ -25,8 +25,11 @@ import numpy as np
 
 import _nupic
 
+from .segment_matrix_adapter import SegmentMatrixAdapterMixin
 
-class SparseMatrixConnections(_nupic.SparseMatrixConnections):
+
+class SparseMatrixConnections(SegmentMatrixAdapterMixin,
+                              _nupic.SparseMatrixConnections):
     def computeActivity(self, activeInputs, permanenceThreshold=None,
                         out=None):
         activeInputs = np.asarray(activeInputs, dtype="uint32")
@@ -90,42 +93,3 @@ class SparseMatrixConnections(_nupic.SparseMatrixConnections):
                     np.asarray(sampleSize, dtype="int32"),
                     initialPermanence,
                     rng)
-
-    def clipPermanences(self, segments):
-        self._clipPermanences(np.asarray(segments, dtype="uint32"))
-
-    def mapSegmentsToSynapseCounts(self, segments):
-        return self._mapSegmentsToSynapseCounts(
-            np.asarray(segments, dtype="uint32"))
-
-    def createSegments(self, segments):
-        return self._createSegments(np.asarray(segments, dtype="uint32"))
-
-    def destroySegments(self, segments):
-        self._destroySegments(np.asarray(segments, dtype="uint32"))
-
-    def getSegmentCounts(self, cells):
-        return self._getSegmentCounts(np.asarray(cells, dtype="uint32"))
-
-    def getSegmentsForCell(self, cell):
-        return self._getSegmentsForCell(cell)
-
-    def sortSegmentsByCell(self, segments):
-        # Can't convert it, since we're sorting it in place.
-        assert segments.dtype == "uint32"
-        self._sortSegmentsByCell(segments)
-
-    def filterSegmentsByCell(self, segments, cells, assumeSorted=False):
-        segments = np.asarray(segments, dtype="uint32")
-        cells = np.asarray(cells, dtype="uint32")
-
-        if not assumeSorted:
-            segments = np.copy(segments)
-            self.sortSegmentsByCell(segments)
-            cells = np.sort(cells)
-
-        return self._filterSegmentsByCell(segments, cells)
-
-    def mapSegmentsToCells(self, segments):
-        segments = np.asarray(segments, dtype="uint32")
-        return self._mapSegmentsToCells(segments)

@@ -23,27 +23,8 @@ import numpy as np
 
 import _nupic
 
-from .nupic_random import Random
-from .segment_sparse_matrix import SegmentSparseMatrix
-from .sparse_binary_matrix import SparseBinaryMatrix
-from .sparse_matrix import SparseMatrix
-from .sparse_matrix_connections import SparseMatrixConnections
+from .segment_matrix_adapter import SegmentMatrixAdapterMixin
 
 
-def GetNTAReal():
-    return np.float32
-
-
-# Included for compatibility with code written for nupic.core
-SM32 = SparseMatrix
-SM_01_32_32 = SparseBinaryMatrix
-
-__exports__ = [
-    "GetNTAReal",
-    "Random",
-    "SM32",
-    "SM_01_32_32",
-    "SparseBinaryMatrix",
-    "SparseMatrix",
-    "SparseMatrixConnections",
-]
+class SegmentSparseMatrix(SegmentMatrixAdapterMixin, _nupic.SegmentSparseMatrix):
+    pass
