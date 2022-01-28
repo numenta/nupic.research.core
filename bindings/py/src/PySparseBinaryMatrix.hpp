@@ -37,7 +37,6 @@
 using nupic::Int32;
 using nupic::UInt32;
 using nupic::UInt64;
-using nupic::Real32;
 
 namespace py = pybind11;
 
@@ -90,7 +89,7 @@ void add_to(py::module &m) {
       self.fromDense(nrows, ncols, arr_begin(data), arr_end(data));
     })
     .def("replaceSparseRow", [](SparseBinaryMatrix32 &self, UInt32 row,
-                                py::array_t<Real32> x) {
+                                py::array_t<UInt32> x) {
       self.replaceSparseRow(row, arr_begin(x), arr_end(x));
     })
     .def("appendSparseRow", [](SparseBinaryMatrix32 &self, py::array_t<UInt32> x) {
