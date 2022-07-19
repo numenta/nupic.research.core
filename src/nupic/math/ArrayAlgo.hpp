@@ -3405,7 +3405,7 @@ inline nupic::UInt32 count_gt(nupic::Real32 *begin, nupic::Real32 *end,
     // DO NOT CHANGE THESE NEXT TWO LINES, OTHERWISE THE ASM CODE BELOW WILL
     // BREAK. 'localThreshold' MUST BE STATIC!! Must always assign threshold to
     // localThreshold also!
-    static float localThreshold;
+    static float localThreshold __attribute__((unused));
     localThreshold = threshold;
 #endif
 
