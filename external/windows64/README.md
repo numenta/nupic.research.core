@@ -6,7 +6,7 @@ The NuPIC Core C++ library can be built with MinGWPy GCC compilers or Microsoft 
 
 > **Note:** To use the C++ library with [NuPIC Python](https://github.com/numenta/nupic) you must build the library with the MinGWPy GCC tools. See the `external\windows64-gcc\README.md` text file for more details.
 
-Refer to nupic.core/external/README.md for an overview of NuPIC Core library build and dependencies.
+Refer to nupic.research.core/external/README.md for an overview of NuPIC Core library build and dependencies.
 
 [CMake](http://www.cmake.org) based build files are used to define the entire build process. The [CMake-GUI](http://www.cmake.org/) application _can_ be used to generate _Visual Studio 14 2015 Win64_ solution and project files.
 
@@ -17,7 +17,7 @@ The following applications are required when rebuilding the core C++ library, an
 - [CMake](http://www.cmake.org/) - version 3.1+
 - [Python 2.7.9+](https://www.python.org/downloads/windows/) - x86-64 version
 
-For re-building the nupic.core C++ library the following are required;
+For re-building the nupic.research.core C++ library the following are required;
 
 - [Microsoft Visual Studio 2015](https://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs) - Community Free edition (or Enterprise edition)
 - [NumPy C++ headers](https://pypi.python.org/pypi/numpy/) - pip install numpy==1.12.1
@@ -43,10 +43,10 @@ To produce a solution and project files for use with Microsoft Visual Studio, yo
 
 ```
 rem Clone the repo
-git clone https://github.com/numenta/nupic.core.git
+git clone https://github.com/numenta/nupic.research.core.git
 
-rem Setup nupic.core and a place to store build files
-cd nupic.core
+rem Setup nupic.research.core and a place to store build files
+cd nupic.research.core
 set NUPIC_CORE=%CD%
 mkdir build\scripts
 cd build\scripts

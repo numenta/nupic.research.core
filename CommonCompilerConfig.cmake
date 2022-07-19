@@ -333,7 +333,7 @@ endif()
 # Assemble compiler and linker properties
 #
 
-# Settings for internal nupic.core code
+# Settings for internal nupic.research.core code
 set(INTERNAL_CXX_FLAGS_OPTIMIZED "${build_type_specific_compile_flags} ${shared_compile_flags} ${cxx_flags_unoptimized} ${internal_compiler_warning_flags} ${optimization_flags_cc}")
 
 set(complete_linker_flags_unoptimized "${build_type_specific_linker_flags} ${shared_linker_flags_unoptimized}")

@@ -3,7 +3,7 @@ unix/apr-util-1.5.4.tar.gz from https://apr.apache.org/
 We use the apr-util unix sources for both unix (linux, Mac OS X) and windows builds.
 apr-util provides CMakeLists.txt for Windows builds; it uses configure-based builds for unix (and friends).
 
-nupic.core's external "package" wraps the build of this library in a cmake module.
+nupic.research.core's external "package" wraps the build of this library in a cmake module.
 
 We patch the apr-util sources as follows:
 

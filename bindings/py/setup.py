@@ -52,7 +52,7 @@ install_folder = ("debug" if debug_mode else "release")
 
 compile_args = ["-std=c++14"]
 link_args = []
-extra_objects = [f"../../build/{install_folder}/lib/libnupic_core.a"]
+extra_objects = [f"../../build/{install_folder}/lib/libnupic_research_core.a"]
 
 if debug_mode:
     compile_args += ["-O0", "-D NTA_ASSERTIONS_ON"]

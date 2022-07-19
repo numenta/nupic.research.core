@@ -64,7 +64,7 @@ set(CAPNP_COMPILER_DEFINITIONS)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(CAPNP_CMAKE_DEFINITIONS -DCAPNP_LITE=1 -DEXTERNAL_CAPNP=1 -DBUILD_TOOLS=OFF)
-  # NOTE nupic.core's swig wraps depend on the macro CAPNP_LITE to have a value
+  # NOTE nupic.research.core's swig wraps depend on the macro CAPNP_LITE to have a value
   set(CAPNP_COMPILER_DEFINITIONS ${CAPNP_COMPILER_DEFINITIONS} -DCAPNP_LITE=1)
   set(capnp_link_libraries ${capnp_lib_capnp} ${capnp_lib_kj})
   set(capn_patch_file "${REPOSITORY_DIR}/external/common/share/capnproto/capnproto-0.6.1.patch")

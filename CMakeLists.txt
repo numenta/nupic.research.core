@@ -20,7 +20,7 @@
 # -----------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.3)
-project(nupic_core CXX)
+project(nupic_research_core CXX)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
@@ -77,5 +77,5 @@ include(CommonCompilerConfig)
 add_subdirectory(external)
 include_directories(SYSTEM ${EXTERNAL_INCLUDE_DIRS})
 
-# Now build nupic_core project.
+# Now build nupic_research_core project.
 add_subdirectory(src)

@@ -3,7 +3,7 @@ unix/apr-1.5.2.tar.gz from https://apr.apache.org/
 We use the apr unix sources for both unix (linux, Mac OS X) and windows builds.
 apr provides CMakeLists.txt for Windows builds; it uses configure-based builds for unix (and friends).
 
-nupic.core's external "package" wraps the build of this library in a cmake module.
+nupic.research.core's external "package" wraps the build of this library in a cmake module.
 
 We patch the apr sources as follows:
 

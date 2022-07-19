@@ -22,7 +22,7 @@
 
 /*
  This file is similar to CppRegionTest except that it also tests Python nodes.
- It is build in nupic.core but tested in nupic. So its execution and README
+ It is build in nupic.research.core but tested in nupic. So its execution and README
  instructions remains in nupic.
 */
 
@@ -463,7 +463,7 @@ int realmain(bool leakTest) {
     // testPynode1xLinking();
   }
 #if !CAPNP_LITE
-  // PyRegion::write is implemented only when nupic.core is compiled with
+  // PyRegion::write is implemented only when nupic.research.core is compiled with
   // CAPNP_LITE=0
   testWriteRead();
 #endif

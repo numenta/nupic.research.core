@@ -108,12 +108,12 @@ else()
     #
     # Add step to organize generic and architecture-specific apr headers under
     # include/apr-1 subdirectory
-    # NOTE the unix configure-based installation does that and nupic.core
+    # NOTE the unix configure-based installation does that and nupic.research.core
     #      depends on this include directory organization.
     #
 
     ExternalProject_Add_Step(Apr1StaticLib move_installed_headers_to_apr_1
-        COMMENT "Windows: moving installed apr headers to include/apr-1, as expected by nupic.core"
+        COMMENT "Windows: moving installed apr headers to include/apr-1, as expected by nupic.research.core"
 
         DEPENDEES install
         ALWAYS 0
@@ -126,7 +126,7 @@ else()
                 -DDEST_DIR_PATH=${APR1_STATIC_LIB_INC_DIR}/apr-1
                 -P ${CMAKE_SOURCE_DIR}/external/MoveFilesToNewDir.cmake
         # Copy <SOURCE_DIR>/include/arch to ${APR1_STATIC_LIB_INC_DIR}/apr-1 as
-        # expected by nupic.core
+        # expected by nupic.research.core
         COMMAND
             ${CMAKE_COMMAND} -E make_directory
                              ${APR1_STATIC_LIB_INC_DIR}/apr-1/arch

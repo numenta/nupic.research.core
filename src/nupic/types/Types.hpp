@@ -21,7 +21,7 @@
  */
 
 /** @file
- * Basic C++ type definitions used throughout `nupic.core` and rely on `Types.h`
+ * Basic C++ type definitions used throughout `nupic.research.core` and rely on `Types.h`
  */
 
 #ifndef NTA_TYPES_HPP
