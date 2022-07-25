@@ -150,7 +150,7 @@ void ConnectionsPerformanceTest::runSpatialPoolerTest(UInt numCells,
 
     for (UInt i = 0; i < numInputs; i++) {
       const Permanence permanence =
-          max((Permanence)0.000001, (Permanence)rand() / RAND_MAX);
+          max((Permanence)0.000001, (Permanence)rand() / (Permanence)RAND_MAX);
       connections.createSynapse(segment, i, permanence);
     }
   }
