@@ -21,7 +21,7 @@
 
 """Unit tests for Cells4."""
 
-import cPickle as pickle
+import pickle
 import os
 
 import numpy
@@ -94,9 +94,8 @@ class Cells4Test(unittest.TestCase):
         break
       for i in xrange(cell1.nCellsPerCol()):
         if cell1.nSegmentsOnCell(c, i) != cell2.nSegmentsOnCell(c, i):
-          print "Num segments different in cell:", c, i,
-          print "numbers = ", cell1.nSegmentsOnCell(c, i), \
-              cell2.nSegmentsOnCell(c, i)
+          print("Num segments different in cell:", c, i)
+          print("numbers = ", cell1.nSegmentsOnCell(c, i), cell2.nSegmentsOnCell(c, i))
           result = False
           break
         else:
@@ -121,7 +120,7 @@ class Cells4Test(unittest.TestCase):
                 break
 
     if result == True:
-      print "TP's match"
+      print("TP's match")
 
     return result
 
@@ -230,15 +229,14 @@ class Cells4Test(unittest.TestCase):
 
     for i in xrange(nCols):
       for j in xrange(nCellsPerCol):
-        print "Adding segment: ", i, j, [((i + 1) % nCols,
-                                          (j + 1) % nCellsPerCol)]
+        print("Adding segment: ", i, j, [((i + 1) % nCols, (j + 1) % nCellsPerCol)])
         cells.addNewSegment(i, j, True if j % 2 == 0 else False,
                             [((i + 1) % nCols, (j + 1) % nCellsPerCol)])
 
     for i in xrange(10):
       x = numpy.zeros(nCols, dtype="uint32")
       _RGEN.initializeUInt32Array(x, 2)
-      print "Input:", x
+      print("Input:", x)
       cells.compute(x, True, True)
 
     cells.rebuildOutSynapses()

@@ -100,13 +100,12 @@ def _runTest():
   elapsedDeserializationTime = time.time() - startDeserializationTime
 
   # Print report
-  print _SERIALIZATION_LOOPS, "Serialization loops in", \
-        elapsedSerializationTime, "seconds."
-  print "\t", elapsedSerializationTime/_SERIALIZATION_LOOPS, "seconds per loop."
+  print(_SERIALIZATION_LOOPS, "Serialization loops in", elapsedSerializationTime, "seconds.")
+  print("\t", elapsedSerializationTime/_SERIALIZATION_LOOPS, "seconds per loop.")
 
-  print deserializationCount, "Deserialization loops in", \
-        elapsedDeserializationTime, "seconds."
-  print "\t", elapsedDeserializationTime/deserializationCount, "seconds per loop."
+  print(deserializationCount, "Deserialization loops in",  elapsedDeserializationTime,
+          "seconds.")
+  print("\t", elapsedDeserializationTime/deserializationCount, "seconds per loop.")
 
 
 
