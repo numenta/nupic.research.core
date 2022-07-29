@@ -43,21 +43,23 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 include(CapnProto)
 
-# APR build currently broken: https://bz.apache.org/bugzilla/show_bug.cgi?id=64753
-# include(Apr1Lib)
-# set(APR1_STATIC_LIB_TARGET ${APR1_STATIC_LIB_TARGET} PARENT_SCOPE)
-# set(APR1_STATIC_LIB_INC_DIR ${APR1_STATIC_LIB_INC_DIR} PARENT_SCOPE)
-# list(APPEND EXTERNAL_INCLUDE_DIRS
-#      ${APR1_STATIC_LIB_INC_DIR}
-#      "${APR1_STATIC_LIB_INC_DIR}/apr-1"
-# )
+# APR build currently broken on Mac: https://bz.apache.org/bugzilla/show_bug.cgi?id=64753
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    include(Apr1Lib)
+    set(APR1_STATIC_LIB_TARGET ${APR1_STATIC_LIB_TARGET} PARENT_SCOPE)
+    set(APR1_STATIC_LIB_INC_DIR ${APR1_STATIC_LIB_INC_DIR} PARENT_SCOPE)
+    list(APPEND EXTERNAL_INCLUDE_DIRS
+         ${APR1_STATIC_LIB_INC_DIR}
+         "${APR1_STATIC_LIB_INC_DIR}/apr-1"
+    )
 
-# # AprUtil1Lib MUST be imported after Apr1Lib due to depencies on exported
-# # properties
-# include(AprUtil1Lib)
-# set(APRUTIL1_STATIC_LIB_TARGET ${APRUTIL1_STATIC_LIB_TARGET} PARENT_SCOPE)
-# set(APRUTIL1_STATIC_LIB_INC_DIR ${APRUTIL1_STATIC_LIB_INC_DIR} PARENT_SCOPE)
-# list(APPEND EXTERNAL_INCLUDE_DIRS ${APRUTIL1_STATIC_LIB_INC_DIR})
+    # AprUtil1Lib MUST be imported after Apr1Lib due to depencies on exported
+    # properties
+    include(AprUtil1Lib)
+    set(APRUTIL1_STATIC_LIB_TARGET ${APRUTIL1_STATIC_LIB_TARGET} PARENT_SCOPE)
+    set(APRUTIL1_STATIC_LIB_INC_DIR ${APRUTIL1_STATIC_LIB_INC_DIR} PARENT_SCOPE)
+    list(APPEND EXTERNAL_INCLUDE_DIRS ${APRUTIL1_STATIC_LIB_INC_DIR})
+endif()
 
 include(YamlLib)
 set(YAML_STATIC_LIB_TARGET ${YAML_STATIC_LIB_TARGET} PARENT_SCOPE)
