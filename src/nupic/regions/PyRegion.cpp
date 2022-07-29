@@ -335,8 +335,8 @@ void PyRegion::serialize(BundleIO &bundle) {
   args.setItem(1, openmode);
   py::Instance f("__builtin__", "file", args);
 
-  // cPickle.dump(node_, f, HIGHEST_PROTOCOL)
-  py::Module pickle("cPickle");
+  // pickle.dump(node_, f, HIGHEST_PROTOCOL)
+  py::Module pickle("pickle");
   py::Tuple args2(3);
   args2.setItem(0, node_);
   args2.setItem(1, f);
@@ -371,8 +371,8 @@ void PyRegion::deserialize(BundleIO &bundle) {
   args.setItem(1, mode);
   py::Instance f("__builtin__", "file", args);
 
-  // node_ = cPickle.load(f)
-  py::Module pickle("cPickle");
+  // node_ = pickle.load(f)
+  py::Module pickle("pickle");
   py::Tuple args2(1);
   args2.setItem(0, f);
   node_.assign(py::Ptr(pickle.invoke("load", args2)));

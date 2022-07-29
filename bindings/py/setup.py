@@ -47,12 +47,13 @@ sources = [
     "src/nupic_module.cpp",
 ]
 
-debug_mode = False
-install_folder = ("debug" if debug_mode else "release")
+debug_mode = os.environ.get("DEBUG_C", False)
+build_folder = ("../../build/debug" if debug_mode else "../../build/release")
+install_folder = os.environ.get("PREFIX", build_folder)
 
 compile_args = ["-std=c++14"]
 link_args = []
-extra_objects = [f"../../build/{install_folder}/lib/libnupic_core.a"]
+extra_objects = [f"{install_folder}/lib/libnupic_research_core.a"]
 
 if debug_mode:
     compile_args += ["-O0", "-D NTA_ASSERTIONS_ON"]
@@ -72,6 +73,10 @@ if __name__ == "__main__":
             "..", "..", "src", "nupic", "proto", "*.capnp"))):
         shutil.copy(protoPath, destDir)
 
+    version_file = os.path.join("..", "..", "VERSION")
+    with open(version_file, encoding="utf8") as f:
+        version_str = f.read()
+
     module = Extension(
         "_nupic",
         sources=sources,
@@ -85,14 +90,14 @@ if __name__ == "__main__":
                       "./../../src/",
                       "./../../src/external",
                       "./../../external/common/include",
-                      f"../../build/{install_folder}/include",
+                      f"{install_folder}/include",
                       get_pybind_include(),
                       get_pybind_include(user=True),
                       np.get_include()]
     )
 
     setup(name="nupic.research.core",
-          version="1.1",
+          version=version_str,
           description="C++ core for nupic.research",
           packages=["nupic.bindings.math"],
           package_data={
@@ -100,5 +105,6 @@ if __name__ == "__main__":
               "nupic.bindings": ["*.so", "*.pyd"],
               "nupic.bindings.tools": ["*.capnp"],
           },
-          setup_requires=["pybind11"],
+          setup_requires=["pybind11", "numpy"],
+          install_requires=["numpy", "pybind11", "pycapnp>=1.1.0"],
           ext_modules=[module])

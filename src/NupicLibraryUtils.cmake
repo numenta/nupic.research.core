@@ -22,7 +22,7 @@
 # Utilities for manipulating libraries
 
 cmake_minimum_required(VERSION 3.3)
-project(nupic_core CXX)
+project(nupic_research_core CXX)
 
 
 # function MERGE_STATIC_LIBRARIES

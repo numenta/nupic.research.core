@@ -27,7 +27,7 @@ with open(versionFile, 'r') as f:
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('/Users/mtaylor/nta/nupic.core/venv/lib/python2.7/site-packages/breathe'))
+# sys.path.insert(0, os.path.abspath('/Users/mtaylor/nta/nupic.research.core/venv/lib/python2.7/site-packages/breathe'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -38,8 +38,8 @@ with open(versionFile, 'r') as f:
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.todo', 'breathe']
 
-breathe_projects = { 'nupic.core': os.path.abspath('../xml')}
-breathe_default_project = 'nupic.core'
+breathe_projects = { 'nupic.research.core': os.path.abspath('../xml')}
+breathe_default_project = 'nupic.research.core'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -234,7 +234,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'nupiccore', u'NuPIC Core Documentation',
+    ('index', 'nupicresearchcore', u'NuPIC Core Documentation',
      [u'Numenta'], 1)
 ]
 

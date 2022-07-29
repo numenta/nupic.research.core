@@ -1,0 +1,49 @@
+{% set data = load_file_regex(load_file="VERSION", regex_pattern=".*") %}
+{% set version = data.string %}
+
+package:
+  name: nupic.research.core
+  version: {{ version }}
+
+source:
+  path: ../
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - git
+    - cmake
+    - make
+    - python
+    - cython
+    - setuptools
+    - numpy
+    - pybind11
+  run:
+    - python
+
+  host:
+    - python
+    - pybind11
+    - numpy
+
+test:
+  requires:
+    - numpy
+    - pytest
+  import:
+    - nupic.bindings.math
+  source_files:
+    - bindings/py/tests
+  commands:
+    # Currently only parts of `nupic.bindings.math` connections were ported to
+    # python 3.
+    # For now, we only test the packages required by 
+    # https://github.com/numenta/nupic.research/tree/master/packages/columns
+    - pytest bindings/py/tests/connections_test.py
+
+about:
+  home: https://github.com/numenta/nupic.research.core
+  license: AGPL
+  license_file: LICENSE.txt

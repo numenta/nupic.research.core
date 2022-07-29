@@ -20,7 +20,7 @@
 # -----------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.3)
-project(nupic_core CXX)
+project(nupic_research_core CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_VERBOSE_MAKEFILE OFF) # toggle for cmake debug
@@ -68,7 +68,7 @@ endif()
 
 
 #
-# Compiler definitions specific to nupic.core code
+# Compiler definitions specific to nupic.research.core code
 #
 
 string(TOUPPER ${PLATFORM} platform_uppercase)
@@ -149,7 +149,7 @@ message(STATUS "CMAKE_PREFIX_PATH   = ${CMAKE_PREFIX_PATH}")
 # Extract current git sha and record in nupic/Version.hpp
 #
 execute_process(COMMAND git rev-parse HEAD
-                OUTPUT_VARIABLE NUPIC_CORE_VERSION
+                OUTPUT_VARIABLE NUPIC_RESEARCH_CORE_VERSION
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 configure_file(
   "${PROJECT_SOURCE_DIR}/nupic/Version.hpp.in"
@@ -237,15 +237,15 @@ message(STATUS "src_common_os_libs        = ${src_common_os_libs}")
 
 
 #
-# Setup nupic_core_solo static library, consisting of our own sources;
+# Setup nupic_research_core_solo static library, consisting of our own sources;
 #
 # this is an intermediate archive that will be merged with external static
-# libraries in a subsequent step to produce the nupic_core "combined" static
+# libraries in a subsequent step to produce the nupic_research_core "combined" static
 # library.
 #
-set(src_lib_static_nupiccore_solo nupic_core_solo)
+set(src_lib_static_nupicresearchcore_solo nupic_research_core_solo)
 
-set(src_nupiccore_srcs
+set(src_nupicresearchcore_srcs
     nupic/algorithms/Anomaly.cpp
     nupic/algorithms/ApicalTiebreakTemporalMemory.cpp
     nupic/algorithms/BitHistory.cpp
@@ -330,44 +330,44 @@ set(src_nupiccore_srcs
     # nupic/utils/Watcher.cpp  # Depends on APR
     )
 
-set(src_lib_static_nupiccore_srcs
+set(src_lib_static_nupicresearchcore_srcs
     ${src_capnp_generated_srcs}
-    ${src_nupiccore_srcs})
+    ${src_nupicresearchcore_srcs})
 
-set(src_lib_static_nupiccore_compile_flags
+set(src_lib_static_nupicresearchcore_compile_flags
     "${src_compile_flags}")
 
 message(STATUS "src_compile_flags = ${src_compile_flags}")
-message(STATUS "src_lib_static_nupiccore_compile_flags = ${src_lib_static_nupiccore_compile_flags}")
+message(STATUS "src_lib_static_nupicresearchcore_compile_flags = ${src_lib_static_nupicresearchcore_compile_flags}")
 
-add_library(${src_lib_static_nupiccore_solo} STATIC
-            ${src_lib_static_nupiccore_srcs})
-# nupic_core_solo sources depend on headers installed by these external projects
-add_dependencies(${src_lib_static_nupiccore_solo}
+add_library(${src_lib_static_nupicresearchcore_solo} STATIC
+            ${src_lib_static_nupicresearchcore_srcs})
+# nupic_research_core_solo sources depend on headers installed by these external projects
+add_dependencies(${src_lib_static_nupicresearchcore_solo}
                  ${YAML_CPP_STATIC_LIB_TARGET}
                  ${YAML_STATIC_LIB_TARGET}
                  # ${APR1_STATIC_LIB_TARGET}
                  # ${APRUTIL1_STATIC_LIB_TARGET}
                  ${Z_STATIC_LIB_TARGET})
-set_target_properties(${src_lib_static_nupiccore_solo} PROPERTIES COMPILE_FLAGS
-                      ${src_lib_static_nupiccore_compile_flags})
+set_target_properties(${src_lib_static_nupicresearchcore_solo} PROPERTIES COMPILE_FLAGS
+                      ${src_lib_static_nupicresearchcore_compile_flags})
 if(${NUPIC_IWYU})
   # TODO: Create a target that doesn't include the generated capnp schema files
   # since we don't want to run iwyu on them and iwyu can only be applied to
   # CMake targets (not source files directly).
-  set_target_properties(${src_lib_static_nupiccore_solo}
+  set_target_properties(${src_lib_static_nupicresearchcore_solo}
     PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 
 #
-# Create the nupic_core "combined" static library by merging nupic_core_solo
+# Create the nupic_research_core "combined" static library by merging nupic_research_core_solo
 # with our external static libraries
 #
 
 include(src/NupicLibraryUtils) # for MERGE_STATIC_LIBRARIES
 
-set(src_lib_static_nupiccore_combined nupic_core)
+set(src_lib_static_nupicresearchcore_combined nupic_research_core)
 
 set(src_external_static_libs
     ${CAPNP_STATIC_LIB_TARGET}
@@ -377,22 +377,22 @@ set(src_external_static_libs
     # ${APRUTIL1_STATIC_LIB_TARGET}
     ${Z_STATIC_LIB_TARGET})
 
-set(src_combined_nupiccore_source_archives
-    ${src_lib_static_nupiccore_solo}
+set(src_combined_nupicresearchcore_source_archives
+    ${src_lib_static_nupicresearchcore_solo}
     ${src_external_static_libs})
 
 # Create a top-level library target for the combined static lib
-merge_static_libraries(${src_lib_static_nupiccore_combined}
-                       "${src_combined_nupiccore_source_archives}")
+merge_static_libraries(${src_lib_static_nupicresearchcore_combined}
+                       "${src_combined_nupicresearchcore_source_archives}")
 
 
 #
-# Build tests of the nupic_core "combined" static library
+# Build tests of the nupic_research_core "combined" static library
 #
 
 # Common libs for test executables
 set(src_common_test_exe_libs
-    ${src_lib_static_nupiccore_combined}
+    ${src_lib_static_nupicresearchcore_combined}
     ${PYTHON_LIBRARIES}
     ${src_common_os_libs})
 
@@ -571,7 +571,7 @@ add_custom_target(tests_all
 # Install targets into CMAKE_INSTALL_PREFIX
 #
 install(TARGETS
-        ${src_lib_static_nupiccore_combined}
+        ${src_lib_static_nupicresearchcore_combined}
         ${src_lib_static_gtest}
         # ${src_executable_helloregion}
         # ${src_executable_cppregiontest}
@@ -639,9 +639,9 @@ install(DIRECTORY "${CAPNP_BINARIES}"
 
 #
 # `make package` results in
-# nupic_core-${NUPIC_CORE_VERSION}-${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}.tar.gz binary release
+# nupic_research_core-${NUPIC_RESEARCH_CORE_VERSION}-${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}.tar.gz binary release
 #
 
 set(CPACK_GENERATOR "TGZ")
-set(CPACK_PACKAGE_FILE_NAME "nupic_core-${NUPIC_CORE_VERSION}-${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}")
+set(CPACK_PACKAGE_FILE_NAME "nupic_research_core-${NUPIC_RESEARCH_CORE_VERSION}-${PLATFORM}${BITNESS}${PLATFORM_SUFFIX}")
 include(CPack)

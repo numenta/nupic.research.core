@@ -34,7 +34,7 @@ def GetNTAReal():
     return np.float32
 
 
-# Included for compatibility with code written for nupic.core
+# Included for compatibility with code written for nupic.research.core
 SM32 = SparseMatrix
 SM_01_32_32 = SparseBinaryMatrix
 

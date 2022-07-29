@@ -23,7 +23,7 @@
 /**
  * @file
  *
- * Basic C type definitions used throughout `nupic.core` .
+ * Basic C type definitions used throughout `nupic.research.core` .
  *
  * It is included by `Types.hpp` - the C++ basic types file
  */

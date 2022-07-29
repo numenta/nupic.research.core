@@ -16,13 +16,13 @@ The bin components for Win32 GCC build via mingw toolchain
 
 The NuPIC Core C++ library can be built with MinGWPy GCC or Microsoft (MS) Visual C compilers. The Python nupic.bindings can **ONLY** be built with the MinGWPy GCC compiler. To use the C++ library with the [NuPIC Python](https://github.com/numenta/nupic) project you must build the library with the MinGW-Py GCC tools, as described below.
 
-Refer to nupic.core/external/README.md for an overview of NuPIC Core library build and dependencies.
+Refer to nupic.research.core/external/README.md for an overview of NuPIC Core library build and dependencies.
 
 CMake based build files are used to define the entire build process. The nupic.bindings SWIG side uses Python distutil and setuptools. The [CMake-GUI](http://www.cmake.org/) application _can_ be used to generate MinGW Makefiles.
 
 The `%NUPIC_CORE%\appveyor.yml` script file shows how the AppVeyor automated build system progresses through building, packaging, and deployment using MinGWPy GCC.
 
-If you need to make changes to the nupic.core C++ code and/or Python SWIG bindings, follow the remaining sections to see how to rebuild it.
+If you need to make changes to the nupic.research.core C++ code and/or Python SWIG bindings, follow the remaining sections to see how to rebuild it.
 
 ## Support applications
 
@@ -48,18 +48,18 @@ The following table shows example CMake common settings;
 
 </center>
 
-For rebuilding nupic.core and nupic.bindings you need to use the cmake `MinGW Makefiles` generator. For example;
+For rebuilding nupic.research.core and nupic.bindings you need to use the cmake `MinGW Makefiles` generator. For example;
 
 ```
 rem Clone the repo
-git clone https://github.com/numenta/nupic.core.git
-cd nupic.core
+git clone https://github.com/numenta/nupic.research.core.git
+cd nupic.research.core
 
 rem Setup Python x86 to use MinGWPy GCC compilers
-copy nupic.core\external\windows32-gcc\bin\distutils.cfg C:\Python27\Lib\distutils
+copy nupic.research.core\external\windows32-gcc\bin\distutils.cfg C:\Python27\Lib\distutils
 
-rem Setup nupic.core and a place to store build files
-cd nupic.core
+rem Setup nupic.research.core and a place to store build files
+cd nupic.research.core
 set NUPIC_CORE=%CD%
 mkdir build\scripts
 cd build\scripts

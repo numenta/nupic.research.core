@@ -24,7 +24,7 @@ Notes:
 
 - This will generate Release build files. For a debug build, change `-DCMAKE_BUILD_TYPE` to `Debug`.
 - If you have dependencies precompiled but not in standard system locations then you can specify where to find them with `-DCMAKE_PREFIX_PATH` (for bin/lib) and `-DCMAKE_INCLUDE_PATH` (for header files).
-- The `-DCMAKE_INSTALL_PREFIX=../release` option shown above is optional, and specifies the location where `nupic.core` should be installed. If omitted, `nupic.core` will be installed in a system location. Using this option is useful when testing versions of `nupic.core` language bindings in [`bindings`](bindings).
+- The `-DCMAKE_INSTALL_PREFIX=../release` option shown above is optional, and specifies the location where `nupic.research.core` should be installed. If omitted, `nupic.research.core` will be installed in a system location. Using this option is useful when testing versions of `nupic.research.core` language bindings in [`bindings`](bindings).
 - To use Include What You Use during compilation, pass `-DNUPIC-IWYU=ON`. This requires that IWYU is installed and findable by CMake, with a minimum CMake version of 3.3. IWYU can be installed from https://include-what-you-use.org/ for Windows and Linux, and on OS X using https://github.com/jasonmp85/homebrew-iwyu.
 
 #### Build:
@@ -85,7 +85,7 @@ Whenever you change `src/nupic/algorithms/MyCode.cpp`, remember to rebuild (`mak
 
 #### Build:
 
- * Open `nupic_core.*proj` solution file generated on `$NUPIC_CORE/build/scripts`.
+ * Open `nupic_research_core.*proj` solution file generated on `$NUPIC_CORE/build/scripts`.
  * Run `ALL_BUILD` project from your IDE.
 
 #### Run the tests:

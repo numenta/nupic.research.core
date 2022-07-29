@@ -111,12 +111,12 @@ else()
 
     #
     # Add step to organize apr-util headers under include/apr-1 subdirectory
-    # NOTE the unix configure-based installation does that and nupic.core
+    # NOTE the unix configure-based installation does that and nupic.research.core
     #      depends on this include directory organization.
     #
 
     ExternalProject_Add_Step(AprUtil1StaticLib move_installed_headers_to_apr_1
-        COMMENT "Windows: moving installed apr-util headers to include/apr-1, as expected by nupic.core"
+        COMMENT "Windows: moving installed apr-util headers to include/apr-1, as expected by nupic.research.core"
 
         DEPENDEES install
         ALWAYS 0
