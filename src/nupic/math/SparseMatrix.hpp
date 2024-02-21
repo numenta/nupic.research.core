@@ -2716,18 +2716,18 @@ public:
     char buffer[64];
 
     size_type n =
-        sprintf(buffer, "sm_csr_1.5 %lu %lu %lu ", (unsigned long)nRows(),
+        snprintf(buffer, sizeof(buffer), "sm_csr_1.5 %lu %lu %lu ", (unsigned long)nRows(),
                 (unsigned long)nCols(), (unsigned long)nNonZeros());
 
     ITERATE_ON_ALL_ROWS {
-      n += sprintf(buffer, "%lu ", (unsigned long)nNonZerosOnRow(row));
+      n += snprintf(buffer, sizeof(buffer), "%lu ", (unsigned long)nNonZerosOnRow(row));
       ITERATE_ON_ROW {
-        n += sprintf(buffer, "%lu ", (unsigned long)*ind);
-        n += sprintf(buffer, "%.15g ", *nz);
+        n += snprintf(buffer, sizeof(buffer), "%lu ", (unsigned long)*ind);
+        n += snprintf(buffer, sizeof(buffer), "%.15g ", *nz);
       }
     }
 
-    n += sprintf(buffer, "%lu ", (unsigned long)n - 5);
+    n += snprintf(buffer, sizeof(buffer), "%lu ", (unsigned long)n - 5);
 
     return n;
   }
