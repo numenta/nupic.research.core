@@ -51,11 +51,17 @@ Notes:
     pip install -r requirements.txt
     pip install -e .
 
-> **Note**: If the extensions haven't been built already then this will call the cmake/make process to generate them.
-
 Once it is installed, you can import NuPIC bindings library to your python script using:
 
     import nupic.bindings
+
+Any time you change the underlying C++ code, you must repeat the above steps:
+
+    # From nupic.research.core/build/scripts
+    make -j3
+    make install
+    # From nupic.research.core
+    pip install -e .
 
 ## Adding to the bindings
 
