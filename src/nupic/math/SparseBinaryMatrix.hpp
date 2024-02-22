@@ -1114,9 +1114,9 @@ public:
     size_type n = b.str().size();
     for (size_type row = 0; row != nRows(); ++row) {
       size_type nnzr = nNonZerosOnRow(row);
-      n += sprintf(buffer, "%ld ", (long)nnzr);
+      n += snprintf(buffer, sizeof(buffer), "%ld ", (long)nnzr);
       for (nz_index_type j = 0; j != nnzr; ++j)
-        n += sprintf(buffer, "%ld ", (long)ind_[row][j]);
+        n += snprintf(buffer, sizeof(buffer), "%ld ", (long)ind_[row][j]);
     }
     return n;
   }

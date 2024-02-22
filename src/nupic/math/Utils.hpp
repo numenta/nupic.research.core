@@ -359,7 +359,7 @@ private:                                                                       \
  * provided by implementations of STL.
  */
 template <class Pair>
-struct select1st : public std::unary_function<Pair, typename Pair::first_type> {
+struct select1st {
   inline const typename Pair::first_type &operator()(const Pair &x) const {
     return x.first;
   }
@@ -372,8 +372,7 @@ struct select1st : public std::unary_function<Pair, typename Pair::first_type> {
  * provided by implementations of STL.
  */
 template <class Pair>
-struct select2nd
-    : public std::unary_function<Pair, typename Pair::second_type> {
+struct select2nd {
   inline const typename Pair::second_type &operator()(const Pair &x) const {
     return x.second;
   }

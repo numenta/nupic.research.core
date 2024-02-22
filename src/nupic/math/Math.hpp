@@ -160,7 +160,7 @@ template <> inline UInt DistanceToZero<UInt>::operator()(const UInt &x) const {
  * Use this functor if T is guaranteed to be positive only.
  */
 template <typename T>
-struct DistanceToZeroPositive : public std::unary_function<T, T> {
+struct DistanceToZeroPositive {
   inline T operator()(const T &x) const { return x; }
 };
 
@@ -306,8 +306,7 @@ template <typename C1, typename Selector, bool f = false> struct IsIncluded {
  * (1,1) < (1,2) < (1,10) < (2,5) < (3,6) < (3,7) ...
  */
 template <typename T1, typename T2>
-struct lexicographic_2
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct lexicographic_2 {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     if (a.first < b.first)
@@ -325,8 +324,7 @@ struct lexicographic_2
  * (1, 3.5) < (2, 5.6) < (10, 7.1) < (11, 8.5)
  */
 template <typename T1, typename T2>
-struct less_1st
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct less_1st {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     return a.first < b.first;
@@ -339,8 +337,7 @@ struct less_1st
  * (10, 3.5) < (1, 5.6) < (2, 7.1) < (11, 8.5)
  */
 template <typename T1, typename T2>
-struct less_2nd
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct less_2nd {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     return a.second < b.second;
@@ -353,8 +350,7 @@ struct less_2nd
  * (10, 3.5) > (8, 5.6) > (2, 7.1) > (1, 8.5)
  */
 template <typename T1, typename T2>
-struct greater_1st
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct greater_1st {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     return a.first > b.first;
@@ -367,8 +363,7 @@ struct greater_1st
  * (10, 3.5) > (1, 5.6) > (2, 7.1) > (11, 8.5)
  */
 template <typename T1, typename T2>
-struct greater_2nd
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct greater_2nd {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     return a.second > b.second;
@@ -377,8 +372,7 @@ struct greater_2nd
 
 //--------------------------------------------------------------------------------
 template <typename T1, typename T2>
-struct greater_2nd_p : public std::binary_function<bool, std::pair<T1, T2 *>,
-                                                   std::pair<T1, T2 *>> {
+struct greater_2nd_p {
   inline bool operator()(const std::pair<T1, T2 *> &a,
                          const std::pair<T1, T2 *> &b) const {
     return *(a.second) > *(b.second);
@@ -390,8 +384,7 @@ struct greater_2nd_p : public std::binary_function<bool, std::pair<T1, T2 *>,
  * A greater 2nd order that breaks ties, useful for debugging.
  */
 template <typename T1, typename T2>
-struct greater_2nd_no_ties
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct greater_2nd_no_ties {
   inline bool operator()(const std::pair<T1, T2> &a,
                          const std::pair<T1, T2> &b) const {
     if (a.second > b.second)
@@ -405,8 +398,7 @@ struct greater_2nd_no_ties
 
 //--------------------------------------------------------------------------------
 template <typename T1, typename T2, typename RND>
-struct greater_2nd_rnd_ties
-    : public std::binary_function<bool, std::pair<T1, T2>, std::pair<T1, T2>> {
+struct greater_2nd_rnd_ties {
   RND &rng;
 
   inline greater_2nd_rnd_ties(RND &_rng) : rng(_rng) {}
@@ -461,7 +453,7 @@ public:
   /**
    * See just above for definition.
    */
-  struct lexicographic : public std::binary_function<bool, ijv, ijv> {
+  struct lexicographic {
     inline bool operator()(const ijv &a, const ijv &b) const {
       if (a.i() < b.i())
         return true;
@@ -476,7 +468,7 @@ public:
   /**
    * See just above for definition.
    */
-  struct less_value : public std::binary_function<bool, ijv, ijv> {
+  struct less_value {
     inline bool operator()(const ijv &a, const ijv &b) const {
       return a.v() < b.v();
     }
@@ -486,7 +478,7 @@ public:
   /**
    * See just above for definition.
    */
-  struct greater_value : public std::binary_function<bool, ijv, ijv> {
+  struct greater_value {
     inline bool operator()(const ijv &a, const ijv &b) const {
       return a.v() > b.v();
     }
@@ -503,44 +495,44 @@ public:
 // Unary functions
 //--------------------------------------------------------------------------------
 
-template <typename T> struct Identity : public std::unary_function<T, T> {
+template <typename T> struct Identity {
   inline T &operator()(T &x) const { return x; }
   inline const T &operator()(const T &x) const { return x; }
 };
 
-template <typename T> struct Negate : public std::unary_function<T, T> {
+template <typename T> struct Negate {
   inline T operator()(const T &x) const { return -x; }
 };
 
-template <typename T> struct Abs : public std::unary_function<T, T> {
+template <typename T> struct Abs {
   inline T operator()(const T &x) const { return x > 0.0 ? x : -x; }
 };
 
-template <typename T> struct Square : public std::unary_function<T, T> {
+template <typename T> struct Square {
   inline T operator()(const T &x) const { return x * x; }
 };
 
-template <typename T> struct Cube : public std::unary_function<T, T> {
+template <typename T> struct Cube {
   inline T operator()(const T &x) const { return x * x * x; }
 };
 
-template <typename T> struct Inverse : public std::unary_function<T, T> {
+template <typename T> struct Inverse {
   inline T operator()(const T &x) const { return 1.0 / x; }
 };
 
-template <typename T> struct Sqrt : public std::unary_function<T, T> {};
+template <typename T> struct Sqrt {};
 
-template <> struct Sqrt<float> : public std::unary_function<float, float> {
+template <> struct Sqrt<float> {
   inline float operator()(const float &x) const { return sqrtf(x); }
 };
 
-template <> struct Sqrt<double> : public std::unary_function<double, double> {
+template <> struct Sqrt<double> {
   inline double operator()(const double &x) const { return sqrt(x); }
 };
 
-template <typename T> struct Exp : public std::unary_function<T, T> {};
+template <typename T> struct Exp {};
 
-template <> struct Exp<float> : public std::unary_function<float, float> {
+template <> struct Exp<float> {
   // On x86_64, there is a bug in glibc that makes expf very slow
   // (more than it should be), so we continue using exp on that
   // platform as a workaround.
@@ -550,23 +542,23 @@ template <> struct Exp<float> : public std::unary_function<float, float> {
   inline float operator()(const float &x) const { return expf(x); }
 };
 
-template <> struct Exp<double> : public std::unary_function<double, double> {
+template <> struct Exp<double> {
   inline double operator()(const double &x) const { return exp(x); }
 };
 
-template <typename T> struct Log : public std::unary_function<T, T> {};
+template <typename T> struct Log {};
 
-template <> struct Log<float> : public std::unary_function<float, float> {
+template <> struct Log<float> {
   inline float operator()(const float &x) const { return logf(x); }
 };
 
-template <> struct Log<double> : public std::unary_function<double, double> {
+template <> struct Log<double> {
   inline double operator()(const double &x) const { return log(x); }
 };
 
-template <typename T> struct Log2 : public std::unary_function<T, T> {};
+template <typename T> struct Log2 {};
 
-template <> struct Log2<float> : public std::unary_function<float, float> {
+template <> struct Log2<float> {
   inline float operator()(const float &x) const {
 #if defined(NTA_OS_WINDOWS)
     return (float)(log(x) / log(2.0));
@@ -576,7 +568,7 @@ template <> struct Log2<float> : public std::unary_function<float, float> {
   }
 };
 
-template <> struct Log2<double> : public std::unary_function<double, double> {
+template <> struct Log2<double> {
   inline double operator()(const double &x) const {
 #if defined(NTA_OS_WINDOWS)
     return log(x) / log(2.0);
@@ -586,9 +578,9 @@ template <> struct Log2<double> : public std::unary_function<double, double> {
   }
 };
 
-template <typename T> struct Log10 : public std::unary_function<T, T> {};
+template <typename T> struct Log10 {};
 
-template <> struct Log10<float> : public std::unary_function<float, float> {
+template <> struct Log10<float> {
   inline float operator()(const float &x) const {
 #if defined(NTA_OS_WINDOWS)
     return (float)(log(x) / log(10.0));
@@ -598,7 +590,7 @@ template <> struct Log10<float> : public std::unary_function<float, float> {
   }
 };
 
-template <> struct Log10<double> : public std::unary_function<double, double> {
+template <> struct Log10<double> {
   inline double operator()(const double &x) const {
 #if defined(NTA_OS_WINDOWS)
     return log(x) / log(10.0);
@@ -608,9 +600,9 @@ template <> struct Log10<double> : public std::unary_function<double, double> {
   }
 };
 
-template <typename T> struct Log1p : public std::unary_function<T, T> {};
+template <typename T> struct Log1p {};
 
-template <> struct Log1p<float> : public std::unary_function<float, float> {
+template <> struct Log1p<float> {
   inline float operator()(const float &x) const {
 #if defined(NTA_OS_WINDOWS)
     return (float)log(1.0 + x);
@@ -620,7 +612,7 @@ template <> struct Log1p<float> : public std::unary_function<float, float> {
   }
 };
 
-template <> struct Log1p<double> : public std::unary_function<double, double> {
+template <> struct Log1p<double> {
   inline double operator()(const double &x) const {
 #if defined(NTA_OS_WINDOWS)
     return log(1.0 + x);
@@ -635,7 +627,7 @@ template <> struct Log1p<double> : public std::unary_function<double, double> {
  * Error is h^4 y^5/30.
  */
 template <typename Float, typename F>
-struct Derivative : public std::unary_function<Float, Float> {
+struct Derivative {
   Derivative(const F &f) : f_(f) {}
 
   F f_;
@@ -653,66 +645,66 @@ struct Derivative : public std::unary_function<Float, Float> {
 //--------------------------------------------------------------------------------
 // Binary functions
 //--------------------------------------------------------------------------------
-template <typename T> struct Assign : public std::binary_function<T, T, T> {
+template <typename T> struct Assign {
   inline T operator()(T &x, const T &y) const {
     x = y;
     return x;
   }
 };
 
-template <typename T> struct Plus : public std::binary_function<T, T, T> {
+template <typename T> struct Plus {
   inline T operator()(const T &x, const T &y) const { return x + y; }
 };
 
-template <typename T> struct Minus : public std::binary_function<T, T, T> {
+template <typename T> struct Minus {
   inline T operator()(const T &x, const T &y) const { return x - y; }
 };
 
-template <typename T> struct Multiplies : public std::binary_function<T, T, T> {
+template <typename T> struct Multiplies {
   inline T operator()(const T &x, const T &y) const { return x * y; }
 };
 
-template <typename T> struct Divides : public std::binary_function<T, T, T> {
+template <typename T> struct Divides {
   inline T operator()(const T &x, const T &y) const { return x / y; }
 };
 
-template <typename T> struct Pow : public std::binary_function<T, T, T> {};
+template <typename T> struct Pow {};
 
 template <>
-struct Pow<float> : public std::binary_function<float, float, float> {
+struct Pow<float> {
   inline float operator()(const float &x, const float &y) const {
     return powf(x, y);
   }
 };
 
 template <>
-struct Pow<double> : public std::binary_function<double, double, double> {
+struct Pow<double> {
   inline double operator()(const double &x, const double &y) const {
     return pow(x, y);
   }
 };
 
-template <typename T> struct Logk : public std::binary_function<T, T, T> {};
+template <typename T> struct Logk {};
 
 template <>
-struct Logk<float> : public std::binary_function<float, float, float> {
+struct Logk<float> {
   inline float operator()(const float &x, const float &y) const {
     return logf(x) / logf(y);
   }
 };
 
 template <>
-struct Logk<double> : public std::binary_function<double, double, double> {
+struct Logk<double> {
   inline double operator()(const double &x, const double &y) const {
     return log(x) / log(y);
   }
 };
 
-template <typename T> struct Max : public std::binary_function<T, T, T> {
+template <typename T> struct Max {
   inline T operator()(const T &x, const T &y) const { return x > y ? x : y; }
 };
 
-template <typename T> struct Min : public std::binary_function<T, T, T> {
+template <typename T> struct Min {
   inline T operator()(const T &x, const T &y) const { return x < y ? x : y; }
 };
 
@@ -721,7 +713,7 @@ template <typename T> struct Min : public std::binary_function<T, T, T> {
  * Gaussian:
  * y = 1/(sigma * sqrt(2*pi)) * exp(-(x-mu)^2/(2*sigma^2)) as a functor.
  */
-template <typename T> struct Gaussian : public std::unary_function<T, T> {
+template <typename T> struct Gaussian {
   T k1, k2, mu;
 
   inline Gaussian(T m, T s) : k1(0.0), k2(0.0), mu(m) {
@@ -755,7 +747,7 @@ template <typename T> struct Gaussian : public std::unary_function<T, T> {
  * 2D Gaussian
  */
 template <typename T>
-struct Gaussian2D // : public std::binary_function<T, T, T> (SWIG pb)
+struct Gaussian2D
 {
   T c_x, c_y, s00, s01, s10, s11, s2, k1;
 
@@ -804,8 +796,7 @@ struct Gaussian2D // : public std::binary_function<T, T, T> (SWIG pb)
  * Compose two unary functions.
  */
 template <typename F1, typename F2>
-struct unary_compose : public std::unary_function<typename F1::argument_type,
-                                                  typename F2::result_type> {
+struct unary_compose {
   typedef typename F1::argument_type argument_type;
   typedef typename F2::result_type result_type;
 
@@ -824,9 +815,7 @@ struct unary_compose : public std::unary_function<typename F1::argument_type,
  * >()); to sort pairs in increasing order of their second element.
  */
 template <typename O, typename S>
-struct predicate_compose
-    : public std::binary_function<typename S::argument_type,
-                                  typename S::argument_type, bool> {
+struct predicate_compose {
   typedef bool result_type;
   typedef typename S::argument_type argument_type;
 
@@ -854,7 +843,7 @@ template <typename T> inline bool isSafeForDivision(const T &x) {
 /**
  * Returns the value passed in or a threshold if the value is >= threshold.
  */
-template <typename T> struct ClipAbove : public std::unary_function<T, T> {
+template <typename T> struct ClipAbove {
   inline ClipAbove(const T &val) : val_(val) {}
 
   inline ClipAbove(const ClipAbove &c) : val_(c.val_) {}
@@ -875,7 +864,7 @@ template <typename T> struct ClipAbove : public std::unary_function<T, T> {
 /**
  * Returns the value passed in or a threshold if the value is < threshold.
  */
-template <typename T> struct ClipBelow : public std::unary_function<T, T> {
+template <typename T> struct ClipBelow {
   inline ClipBelow(const T &val) : val_(val) {}
 
   inline ClipBelow(const ClipBelow &c) : val_(c.val_) {}

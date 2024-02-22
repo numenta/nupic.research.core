@@ -115,7 +115,6 @@ float Solver<TQ>::solve(int l, TQ &Q, const signed char *y_, float *alpha_,
 
   // optimization step
 
-  int iter = 0;
   int counter = std::min(l, 1000) + 1;
 
   while (1) {
@@ -139,8 +138,6 @@ float Solver<TQ>::solve(int l, TQ &Q, const signed char *y_, float *alpha_,
       else
         counter = 1; // do shrinking next iteration
     }
-
-    ++iter;
 
     // update alpha[i] and alpha[j], handle bounds carefully
     const float *Q_i = Q.get_Q(i, active_size);
