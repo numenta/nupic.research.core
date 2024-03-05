@@ -323,6 +323,12 @@ void add_to(py::module &m) {
                                py::array_t<Real32> x) {
       self.setRowFromDense(row, arr_begin(x));
     })
+    .def("setRowFromSparse", [](SparseMatrix32 &self,
+                                UInt32 row,
+                                py::array_t<UInt32> ind,
+                                py::array_t<Real32> val) {
+      self.setRowFromSparse(row, arr_begin(ind), arr_end(ind), arr_begin(val));
+    })
     .def("_writeAsCapnpPyBytes", [](SparseMatrix32 &self) {
       return nupic::PyCapnpHelper::writeAsPyBytes(self);
     })
@@ -408,7 +414,7 @@ void add_to(py::module &m) {
     .def("_nNonZerosPerRowOnCols", [](SparseMatrix32 &self,
                                       py::array_t<UInt32> rows,
                                       py::array_t<UInt32> cols) {
-      py::array_t<UInt32> out(self.nRows());
+      py::array_t<UInt32> out(rows.size());
       self.nNonZerosPerRowOnCols(arr_begin(rows), arr_end(rows),
                                  arr_begin(cols), arr_end(cols),
                                  arr_begin(out));
