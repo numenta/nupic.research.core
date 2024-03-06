@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # Numenta Platform for Intelligent Computing (NuPIC)
-# Copyright (C) 2022, Numenta, Inc.  Unless you have an agreement
+# Copyright (C) 2024, Numenta, Inc.  Unless you have an agreement
 # with Numenta, Inc., for a separate license for this software code, the
 # following terms and conditions apply:
 #
@@ -19,15 +19,10 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
-from .apical_tiebreak_temporal_memory import (
-    ApicalTiebreakPairMemory,
-    ApicalTiebreakSequenceMemory,
-)
-from .spatial_pooler import SpatialPooler
+import _nupic
 
-
-__exports__ = [
-    "ApicalTiebreakPairMemory",
-    "ApicalTiebreakSequenceMemory",
-    "SpatialPooler",
-]
+class SpatialPooler(_nupic.SpatialPooler):
+    """
+    Placeholder
+    """
+    pass

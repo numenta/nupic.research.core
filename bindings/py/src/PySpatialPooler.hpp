@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------
  * Numenta Platform for Intelligent Computing (NuPIC)
- * Copyright (C) 2022, Numenta, Inc.  Unless you have an agreement
+ * Copyright (C) 2024, Numenta, Inc.  Unless you have an agreement
  * with Numenta, Inc., for a separate license for this software code, the
  * following terms and conditions apply:
  *
@@ -20,6 +20,9 @@
  * ----------------------------------------------------------------------
  */
 
+#ifndef NTA_PY_SPATIAL_POOLER
+#define NTA_PY_SPATIAL_POOLER
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/operators.h>
@@ -27,33 +30,26 @@
 
 #include <vector>
 
-#include "nupic_module.hpp"
-#include "PyApicalTiebreakTemporalMemory.hpp"
-#include "PyConnections.hpp"
-#include "PyRandom.hpp"
-#include "PySegmentSparseMatrix.hpp"
-#include "PySparseBinaryMatrix.hpp"
-#include "PySparseMatrixConnections.hpp"
-#include "PySparseMatrix.hpp"
-#include "PySpatialPooler.hpp"
+#include <nupic/algorithms/SpatialPooler.hpp>
+
+#include <nupic_module.hpp>
+#include "support/PyCapnp.hpp"
+#include "support/pybind_helpers.hpp"
+
+namespace nupic {
+namespace py_spatial_pooler {
+
+using namespace nupic::algorithms::spatial_pooler;
 
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(_nupic, m)
-{
-  nupic::py_connections::add_to(m);
-  nupic::py_apical_tiebreak_temporal_memory::add_to(m);
-  nupic::py_spatial_pooler::add_to(m);
-  nupic::py_random::add_to(m);
-  nupic::py_segment_sparse_matrix::add_to(m);
-  nupic::py_sparse_matrix::add_to(m);
-  nupic::py_sparse_binary_matrix::add_to(m);
-  nupic::py_sparse_matrix_connections::add_to(m);
-
-#ifdef VERSION_INFO
-  m.attr("__version__") = VERSION_INFO;
-#else
-  m.attr("__version__") = "dev";
-#endif
+void add_to(py::module &m) {
+  py::class_<SpatialPooler>(m, "SpatialPooler")
+    .def(py::init<>());
 }
+
+} // namespace py_spatial_pooler
+} // namespace nupic
+
+#endif // NTA_PY_SPATIAL_POOLER
