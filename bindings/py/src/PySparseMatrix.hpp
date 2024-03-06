@@ -523,6 +523,8 @@ void add_to(py::module &m) {
     .def("divide", &SparseMatrix32::divide)
     .def("elementNZMultiply", &SparseMatrix32::elementNZMultiply)
     .def("countWhereEqual", &SparseMatrix32::countWhereEqual)
+    .def("countWhereGreater", &SparseMatrix32::countWhereGreater)
+    .def("countWhereGreaterEqual", &SparseMatrix32::countWhereGreaterEqual)
     .def("whereEqual", [](SparseMatrix32 &self, UInt32 begin_row, UInt32 end_row,
                           UInt32 begin_col, UInt32 end_col, Real32 value) {
       std::vector<UInt32> rows, cols;
