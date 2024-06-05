@@ -72,7 +72,7 @@ class SparseMatrix(_nupic.SparseMatrix):
             self.fromPyString(serialized)
 
         elif dense is not None:
-            self.fromDense(np.asarray(dense, dtype=np.float32))
+            self.fromDense(np.ascontiguousarray(dense, dtype=np.float32))
 
         elif from01:
             nz_i,nz_j = args[0].getAllNonZeros(True)
@@ -252,7 +252,7 @@ class SparseMatrix(_nupic.SparseMatrix):
         return result
 
     def fromDense(self, m):
-        m = np.asarray(m, dtype="float32")
+        m = np.ascontiguousarray(m, dtype="float32")
         self._fromDense(m.shape[0], m.shape[1], m)
 
     def rightVecSumAtNZ(self, denseArray, out=None):

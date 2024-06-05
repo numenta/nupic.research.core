@@ -3742,6 +3742,28 @@ class SparseMatrixTest(unittest.TestCase):
               total_calls = total_calls + ncalls
           print(avg_T, total_calls, avg_T / float(total_calls))
 
+  def test_construct_from_numpy(self):
+
+    print('Testing construct_from_numpy')
+
+    arr1 = numpy.array([[0, 1, 2],
+                        [3, 4, 5]], 
+                        dtype=numpy.float32)
+    # Also test a transposed version of the same matrix.
+    arr2 = numpy.array([[0, 3],
+                        [1, 4],
+                        [2, 5]], 
+                        dtype=numpy.float32)
+    sm1 = SM32(arr1)
+    sm2 = SM32(arr2.transpose())
+
+    out1 = sm1.toDense()
+    out2 = sm2.toDense()
+
+    numpy.testing.assert_equal(out1, arr1)
+    numpy.testing.assert_equal(out2, arr1)
+
+
 
 
 if __name__ == "__main__":
