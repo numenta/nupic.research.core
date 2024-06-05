@@ -32,7 +32,7 @@ class SparseBinaryMatrix(_nupic.SparseBinaryMatrix):
                 self.fromCSR(args[0])
             elif isinstance(args[0], np.ndarray) or hasattr(args[0], '__iter__'):
                 super().__init__(1)
-                self.fromDense(np.asarray(args[0]))
+                self.fromDense(np.ascontiguousarray(args[0]))
             elif isinstance(args[0], int):
                 super().__init__(args[0])
             elif isinstance(args[0], _SM_01_32_32):
@@ -59,7 +59,7 @@ class SparseBinaryMatrix(_nupic.SparseBinaryMatrix):
         self.set(index[0], index[1], value)
 
     def fromDense(self, m):
-        m = np.asarray(m, dtype="bool")
+        m = np.ascontiguousarray(m, dtype="bool")
         self._fromDense(m.shape[0], m.shape[1], m)
 
     def rightVecSumAtNZ(self, denseArray, out=None):
